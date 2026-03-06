@@ -1,3 +1,4 @@
+"use client";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -10,11 +11,34 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import Image from "next/image";
+import Link from "next/link";
+import { useState } from "react";
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
+
+  const [errors, setErrors] = useState({
+    email: "",
+    password: "",
+  });
+
+  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    // clear the error for this field as user types
+    setErrors((prev) => ({ ...prev, [name]: "" }));
+  }
+
+  function validate(){
+    
+  }
+
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card className="overflow-hidden p-0">
@@ -32,22 +56,31 @@ export function LoginForm({
                 <Input
                   id="email"
                   type="email"
+                  name="email"
+                  value={formData.email}
                   placeholder="m@example.com"
                   required
-  
+                  onChange={handleChange}
                 />
               </Field>
               <Field>
                 <div className="flex items-center">
                   <FieldLabel htmlFor="password">Password</FieldLabel>
-                  <a
-                    href="#"
+                  <Link
+                    href={"/"}
                     className="ml-auto text-sm underline-offset-2 hover:underline"
                   >
                     Forgot your password?
-                  </a>
+                  </Link>
                 </div>
-                <Input id="password" type="password" required />
+                <Input
+                  id="password"
+                  type="password"
+                  name="password"
+                  value={formData.password}
+                  required
+                  onChange={handleChange}
+                />
               </Field>
               <Field>
                 <Button type="submit">Login</Button>
@@ -93,9 +126,8 @@ export function LoginForm({
             <Image
               src="/variant_2_warm_parchment.png"
               alt="Image"
-              width={500}
-              height={500}
-              className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
+              fill
+              className="aobject-cover dark:brightness-[0.2] dark:grayscale"
             />
           </div>
         </CardContent>
