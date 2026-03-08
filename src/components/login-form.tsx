@@ -13,6 +13,8 @@ import { Input } from "@/components/ui/input";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import z from "zod";
+import { loginSchema } from "@/lib/schemas/auth";
 
 export function LoginForm({
   className,
@@ -35,15 +37,38 @@ export function LoginForm({
     setErrors((prev) => ({ ...prev, [name]: "" }));
   }
 
-  function validate(){
-    
+  function validate() {
+    const result = loginSchema.safeParse(formData);
+
+    if (!result.success) {
+      const errors = z.treeifyError(result.error); //returns a structured error tree that matches your schema.
+
+      setErrors({
+        email: errors.properties?.email?.errors?.[0] ?? "",
+        password: errors.properties?.password?.errors?.[0] ?? "",
+      });
+      console.log(errors);
+
+      return false;
+    }
+    return true;
+  }
+
+  function handleSubmit(e: React.SubmitEvent) {
+    e.preventDefault();
+
+    const isValid = validate();
+
+    if (!isValid) return;
+
+    console.log("Login data:", formData);
   }
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card className="overflow-hidden p-0">
         <CardContent className="grid p-0 md:grid-cols-2">
-          <form className="p-6 md:p-8">
+          <form className="p-6 md:p-8" onSubmit={handleSubmit}>
             <FieldGroup>
               <div className="flex flex-col items-center gap-2 text-center">
                 <h1 className="text-2xl font-bold">Login</h1>
@@ -51,6 +76,7 @@ export function LoginForm({
                   Login to your account
                 </p>
               </div>
+              {/* EMAIL FIELD */}
               <Field>
                 <FieldLabel htmlFor="email">Email</FieldLabel>
                 <Input
@@ -59,9 +85,11 @@ export function LoginForm({
                   name="email"
                   value={formData.email}
                   placeholder="m@example.com"
-                  required
                   onChange={handleChange}
                 />
+                {errors.email && (
+                  <p className="text-sm text-red-500">{errors.email}</p>
+                )}
               </Field>
               <Field>
                 <div className="flex items-center">
@@ -78,9 +106,11 @@ export function LoginForm({
                   type="password"
                   name="password"
                   value={formData.password}
-                  required
                   onChange={handleChange}
                 />
+                {errors.password && (
+                  <p className="text-sm text-red-500">{errors.password}</p>
+                )}
               </Field>
               <Field>
                 <Button type="submit">Login</Button>
