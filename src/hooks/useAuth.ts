@@ -25,12 +25,13 @@ export function useLogin() {
 
   return useMutation({
     mutationFn: async (credentials: LoginCredentials) => {
-      const response = await loginRequest(credentials);
-      return response.data.data;
+      const { data } = await loginRequest(credentials);
+      return data;
     },
     onSuccess: (data) => {
-      sessionStorage.setItem("access_token", data.access_token);
+      sessionStorage.setItem("access_token", data.data.access_token);
       queryClient.invalidateQueries({ queryKey: ["authUser"] });
+      toast.success(data.message);
     },
     onError: (error: Error) => {
       toast.error(error.message);

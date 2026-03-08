@@ -15,11 +15,14 @@ import Link from "next/link";
 import { useState } from "react";
 import z from "zod";
 import { loginSchema } from "@/lib/schemas/auth";
+import { useLogin } from "@/hooks/useAuth";
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
+  const { mutate: login, isPending, isError, error, data } = useLogin(); // login hook to login
+
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -62,6 +65,7 @@ export function LoginForm({
     if (!isValid) return;
 
     console.log("Login data:", formData);
+    login(formData);
   }
 
   return (
@@ -76,6 +80,13 @@ export function LoginForm({
                   Login to your account
                 </p>
               </div>
+
+              {/* API-level error banner */}
+              {isError && (
+                <p className="text-sm text-destructive text-center">
+                  {error.message ?? "Something went wrong"}
+                </p>
+              )}
               {/* EMAIL FIELD */}
               <Field>
                 <FieldLabel htmlFor="email">Email</FieldLabel>
@@ -88,7 +99,7 @@ export function LoginForm({
                   onChange={handleChange}
                 />
                 {errors.email && (
-                  <p className="text-sm text-red-500">{errors.email}</p>
+                  <p className="text-sm text-destructive">{errors.email}</p>
                 )}
               </Field>
               <Field>
@@ -109,11 +120,13 @@ export function LoginForm({
                   onChange={handleChange}
                 />
                 {errors.password && (
-                  <p className="text-sm text-red-500">{errors.password}</p>
+                  <p className="text-sm text-destructive">{errors.password}</p>
                 )}
               </Field>
               <Field>
-                <Button type="submit">Login</Button>
+                <Button type="submit" disabled={isPending}>
+                  {isPending ? "Logging in ..." : "Login"}
+                </Button>
               </Field>
               <FieldSeparator className="*:data-[slot=field-separator-content]:bg-card">
                 Or continue with
