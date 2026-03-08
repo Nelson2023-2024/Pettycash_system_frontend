@@ -16,6 +16,7 @@ import { useState } from "react";
 import z from "zod";
 import { loginSchema } from "@/lib/schemas/auth";
 import { useLogin } from "@/hooks/useAuth";
+import { Spinner } from "./ui/spinner";
 
 export function LoginForm({
   className,
@@ -125,7 +126,14 @@ export function LoginForm({
               </Field>
               <Field>
                 <Button type="submit" disabled={isPending}>
-                  {isPending ? "Logging in ..." : "Login"}
+                  {isPending ? (
+                    <>
+                      <Spinner />
+                      Logging in ....
+                    </>
+                  ) : (
+                    "Login"
+                  )}
                 </Button>
               </Field>
               <FieldSeparator className="*:data-[slot=field-separator-content]:bg-card">
