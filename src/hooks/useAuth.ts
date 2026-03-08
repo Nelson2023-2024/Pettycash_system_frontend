@@ -5,6 +5,7 @@ import {
 } from "@/services/api.auth";
 import { LoginCredentials } from "@/types/auth";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 
 export function useAuthMe() {
@@ -22,6 +23,7 @@ export function useAuthMe() {
 
 export function useLogin() {
   const queryClient = useQueryClient();
+  const router = useRouter()
 
   return useMutation({
     mutationFn: async (credentials: LoginCredentials) => {
@@ -32,6 +34,8 @@ export function useLogin() {
       sessionStorage.setItem("access_token", data.data.access_token);
       queryClient.invalidateQueries({ queryKey: ["authUser"] });
       toast.success(data.message);
+      router.replace('/')
+      
     },
     onError: (error: Error) => {
       toast.error(error.message);
