@@ -7,7 +7,7 @@ const DashboardLayout = ({ children }: ChildrenProps) => {
   return <>
   <SidebarProvider>
     <AppSidebar/>
-    <main>
+    <main className="flex flex-col w-full">
         <SidebarTrigger/>
         {children}
     </main>
