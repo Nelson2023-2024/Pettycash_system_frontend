@@ -1,5 +1,6 @@
 import { axiosInstance } from "@/lib/axios";
-import { ApiResponse, AuthUser, LoginCredentials } from "@/types/auth";
+import { AuthUser, LoginCredentials } from "@/types/auth";
+import { ApiResponse } from "@/types/common";
 
 export const loginRequest = (credentials: LoginCredentials) => {
   return axiosInstance.post<ApiResponse<AuthUser>>("auth/login/", credentials);
