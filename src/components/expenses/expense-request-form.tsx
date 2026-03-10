@@ -1,12 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import {
   Field,
@@ -40,7 +35,11 @@ const EXPENSE_TYPES = [
   },
 ];
 
-export function ExpenseRequestForm() {
+interface ExpenseRequestFormProps {
+  onSuccess?: () => void; // 👈 called after successful create
+}
+
+export function ExpenseRequestForm({ onSuccess }: ExpenseRequestFormProps) {
   const { mutate: createExpense, isPending } = useCreateExpense();
 
   const [formData, setFormData] = useState({
@@ -86,8 +85,12 @@ export function ExpenseRequestForm() {
       return;
     }
 
-    createExpense(result.data);
-    console.log(result.data)
+    createExpense(result.data,{
+      onSuccess: () =>{
+        onSuccess?.()
+      }
+    });
+    console.log(result.data);
   }
   return (
     <div className="flex-1 flex justify-center items-center">
