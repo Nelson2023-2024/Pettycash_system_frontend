@@ -12,18 +12,14 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
 } from "./ui/collapsible";
-
 import { ChevronDown, User2, BadgeDollarSign } from "lucide-react";
-
 import { useAuthMe } from "@/hooks/useAuth";
-import { navConfig } from "@/config/navigation";
-
+import { allNavItems } from "@/config/navigation";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Spinner } from "./ui/spinner";
@@ -32,9 +28,17 @@ export function AppSidebar() {
   const { data: user, isLoading } = useAuthMe();
   const pathname = usePathname();
 
-  const roleCode = user?.role ?? "Employee";
+  const permissions = new Set(user?.permissions ?? []);
 
-  const groups = navConfig[roleCode] ?? navConfig["Employee"];
+  // Filter each group's items to only what the user has permission for
+  // Then drop empty groups entirely
+  const visibleGroups = allNavItems
+    .map((group) => ({
+      ...group,
+      items: group.items.filter((item) => permissions.has(item.permission)),
+    }))
+    .filter((group) => group.items.length > 0);
+
   return (
     <Sidebar variant="sidebar" collapsible="icon">
       {/* HEADER */}
@@ -52,11 +56,11 @@ export function AppSidebar() {
       {/* NAV */}
       <SidebarContent>
         {isLoading ? (
-          <div className="flex justify-center items-center h-svh px-4 py-2 text-sm  text-muted-foreground">
-            <Spinner className="size-9 text-center" />
+          <div className="flex justify-center items-center h-svh">
+            <Spinner className="size-9" />
           </div>
         ) : (
-          groups.map((group) => (
+          visibleGroups.map((group) => (
             <Collapsible
               key={group.label}
               defaultOpen
@@ -69,7 +73,6 @@ export function AppSidebar() {
                     <ChevronDown className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-180" />
                   </CollapsibleTrigger>
                 </SidebarGroupLabel>
-
                 <CollapsibleContent>
                   <SidebarGroupContent>
                     <SidebarMenu>
@@ -102,9 +105,9 @@ export function AppSidebar() {
           <SidebarMenuItem>
             <SidebarMenuButton tooltip={user?.fullname ?? "User"}>
               <User2 />
-              <div className="flex flex-col gap-0.5">
+              <div className="flex flex-col gap-0.5 group-data-[collapsible=icon]:hidden">
                 <span>{user?.fullname ?? "..."}</span>
-                <span className="text-primary">{user?.role}</span>
+                <span className="text-xs text-primary">{user?.role}</span>
               </div>
             </SidebarMenuButton>
           </SidebarMenuItem>
