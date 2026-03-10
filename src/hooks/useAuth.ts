@@ -23,7 +23,7 @@ export function useAuthMe() {
 
 export function useLogin() {
   const queryClient = useQueryClient();
-  const router = useRouter()
+  const router = useRouter();
 
   return useMutation({
     mutationFn: async (credentials: LoginCredentials) => {
@@ -32,10 +32,11 @@ export function useLogin() {
     },
     onSuccess: (data) => {
       sessionStorage.setItem("access_token", data.data.access_token);
+      // store permissions in a cookie so middleware can read it
+      document.cookie = `permissions=${JSON.stringify(data.data.permissions)}; path=/`;
       queryClient.invalidateQueries({ queryKey: ["authUser"] });
       toast.success(data.message);
-      router.replace('/')
-      
+      router.replace("/");
     },
     onError: (error: Error) => {
       toast.error(error.message);
@@ -57,6 +58,7 @@ export function useLogout() {
 
     onSuccess: (data) => {
       sessionStorage.removeItem("access_token");
+      document.cookie = "permissions=; path=/; max-age=0";
       queryClient.invalidateQueries({ queryKey: ["authUser"] });
       toast.success(data.message);
     },
