@@ -18,6 +18,7 @@ export interface NavItem {
   title: string;
   icon: LucideIcon;
   href: string;
+  permission: string; // ← matches exactly what backend sends
 }
 
 export interface NavGroup {
@@ -25,112 +26,98 @@ export interface NavGroup {
   items: NavItem[];
 }
 
-export const navConfig: Record<string, NavGroup[]> = {
-  Employee: [
-    {
-      label: "My Expenses",
-      items: [
-        { title: "Dashboard", icon: LayoutDashboard, href: "/dashboard" },
-        { title: "New Request", icon: FilePlus, href: "/expenses/new" },
-        { title: "My Requests", icon: ClipboardList, href: "/expenses" },
-        { title: "Reconciliations", icon: Receipt, href: "/reconciliations" },
-      ],
-    },
-  ],
-
-  "Finance Officer": [
-    {
-      label: "Overview",
-      items: [
-        { title: "Dashboard", icon: LayoutDashboard, href: "/dashboard" },
-        { title: "Petty Cash Account", icon: Wallet, href: "/account" },
-      ],
-    },
-    {
-      label: "Expense Requests",
-      items: [
-        {
-          title: "Pending Approval",
-          icon: ClipboardList,
-          href: "/expenses/pending",
-        },
-        { title: "All Requests", icon: ScrollText, href: "/expenses" },
-      ],
-    },
-    {
-      label: "Reconciliations",
-      items: [
-        {
-          title: "Under Review",
-          icon: CheckSquare,
-          href: "/reconciliations/review",
-        },
-        {
-          title: "All Reconciliations",
-          icon: Receipt,
-          href: "/reconciliations",
-        },
-      ],
-    },
-    {
-      label: "Top-Up",
-      items: [
-        { title: "Request Top-Up", icon: BadgeDollarSign, href: "/topup/new" },
-        { title: "Top-Up History", icon: RefreshCcw, href: "/topup" },
-      ],
-    },
-  ],
-
-  "Chief Finance Officer": [
-    {
-      label: "Overview",
-      items: [
-        { title: "Dashboard", icon: LayoutDashboard, href: "/dashboard" },
-        { title: "Petty Cash Account", icon: Wallet, href: "/account" },
-      ],
-    },
-    {
-      label: "Approvals",
-      items: [
-        {
-          title: "Top-Up Approvals",
-          icon: CheckSquare,
-          href: "/topup/pending",
-        },
-        { title: "All Top-Ups", icon: RefreshCcw, href: "/topup" },
-        { title: "All Expenses", icon: ScrollText, href: "/expenses" },
-      ],
-    },
-    {
-      label: "Reports",
-      items: [
-        { title: "Reconciliations", icon: Receipt, href: "/reconciliations" },
-        { title: "Audit Logs", icon: ScrollText, href: "/logs" },
-      ],
-    },
-  ],
-
-  Admin: [
-    {
-      label: "Overview",
-      items: [
-        { title: "Dashboard", icon: LayoutDashboard, href: "/dashboard" },
-        { title: "Petty Cash Account", icon: Wallet, href: "/account" },
-      ],
-    },
-    {
-      label: "Management",
-      items: [
-        { title: "Users", icon: Users, href: "/admin/users" },
-        { title: "Departments", icon: Building2, href: "/admin/departments" },
-        { title: "Audit Logs", icon: ScrollText, href: "/admin/logs" },
-      ],
-    },
-    {
-      label: "Settings",
-      items: [
-        { title: "System Settings", icon: Settings, href: "/admin/settings" },
-      ],
-    },
-  ],
-};
+// Every item is tied to one permission from your DB
+// If user has that permission → item shows. Simple.
+export const allNavItems: NavGroup[] = [
+  {
+    label: "Overview",
+    items: [
+      {
+        title: "Dashboard",
+        icon: LayoutDashboard,
+        href: "/dashboard",
+        permission: "can_view_dashboard",
+      },
+      {
+        title: "Petty Cash Account",
+        icon: Wallet,
+        href: "/account",
+        permission: "can_view_petty_cash_account",
+      },
+    ],
+  },
+  {
+    label: "My Expenses",
+    items: [
+      {
+        title: "New Request",
+        icon: FilePlus,
+        href: "/expenses/new",
+        permission: "can_create_expense",
+      },
+      {
+        title: "My Requests",
+        icon: ClipboardList,
+        href: "/expenses",
+        permission: "can_view_own_expenses",
+      },
+      {
+        title: "Reconciliations",
+        icon: Receipt,
+        href: "/reconciliations",
+        permission: "can_view_own_reconciliations",
+      },
+    ],
+  },
+  {
+    label: "Expense Requests",
+    items: [
+      {
+        title: "All Expenses",
+        icon: ScrollText,
+        href: "/expenses/all",
+        permission: "can_view_all_expenses",
+      },
+      {
+        title: "All Reconciliations",
+        icon: Receipt,
+        href: "/reconciliations/all",
+        permission: "can_view_all_reconciliations",
+      },
+    ],
+  },
+  {
+    label: "Top-Up",
+    items: [
+      {
+        title: "All Top-Ups",
+        icon: RefreshCcw,
+        href: "/topup",
+        permission: "can_view_all_topups",
+      },
+      {
+        title: "My Top-Ups",
+        icon: BadgeDollarSign,
+        href: "/topup/mine",
+        permission: "can_view_own_topups",
+      },
+    ],
+  },
+  {
+    label: "Management",
+    items: [
+      {
+        title: "Users",
+        icon: Users,
+        href: "/admin/users",
+        permission: "can_view_all_departments",
+      },
+      {
+        title: "Departments",
+        icon: Building2,
+        href: "/admin/departments",
+        permission: "can_view_all_departments",
+      },
+    ],
+  },
+];
