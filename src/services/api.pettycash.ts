@@ -3,7 +3,6 @@
 
 import { axiosInstance } from "@/lib/axios";
 import { ApiResponse } from "@/types/common";
-import { Expense, CreateExpensePayload, UpdateExpensePayload, DecideExpensePayload } from "@/types/expense";
 import { CreatePettyCashPayload, PettyCash, UpdatePettyCashPayload } from "@/types/pettycash";
 
 // FO
