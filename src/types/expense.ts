@@ -6,6 +6,8 @@ export interface Expense {
   description: string;
   status: string;
   created_at: string;
+  mpesa_phone: string;
+  receipt?: string;
 }
 
 export interface CreateExpensePayload {

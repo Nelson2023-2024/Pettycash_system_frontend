@@ -47,6 +47,14 @@ export const expenseColumns: ColumnDef<Expense>[] = [
         <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),
+    cell: ({ row }) => {
+      const title: string = row.getValue("title");
+      return (
+        <span className="text-sm font-medium">
+          {title}
+        </span>
+      );
+    },
   },
 
   // ── Amount ──
