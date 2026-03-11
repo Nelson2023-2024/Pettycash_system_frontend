@@ -5,6 +5,7 @@ import { DataTable } from "@/components/ui/data-table";
 import { AppDialog } from "@/components/ui/app-dialog";
 import { expenseColumns } from "@/components/expenses/expense-columns";
 import { ExpenseRequestForm } from "@/components/expenses/expense-request-form";
+import { ExpenseEditForm } from "@/components/expenses/expense-edit-form";
 import {
   useGetAuthUserExpenses,
   useDeactivateExpense,
@@ -17,13 +18,13 @@ export default function ExpenseDataTable() {
   const { data: expenses = [], isPending } = useGetAuthUserExpenses();
   const { mutate: deactivateExpense } = useDeactivateExpense();
 
-  // Controls whether the create dialog is open
   const [createOpen, setCreateOpen] = useState(false);
 
+  // Tracks which expense is being edited — null means dialog is closed
+  const [editingExpense, setEditingExpense] = useState<Expense | null>(null);
+
   function handleEdit(rows: Expense[]) {
-    const expense = rows[0];
-    console.log("Edit expense:", expense);
-    // 👉 you'll wire up an edit dialog here later
+    setEditingExpense(rows[0]); // 👈 opens the edit dialog with that expense
   }
 
   function handleDelete(rows: Expense[]) {
@@ -32,7 +33,7 @@ export default function ExpenseDataTable() {
 
   return (
     <div className="flex flex-col gap-4">
-      {/* ── Header: title + create button ── */}
+      {/* ── Header ── */}
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-semibold">My Expenses</h1>
@@ -40,7 +41,6 @@ export default function ExpenseDataTable() {
             Manage and track your expense requests
           </p>
         </div>
-
         <Button
           onClick={() => setCreateOpen(true)}
           className="flex items-center gap-2"
@@ -63,15 +63,32 @@ export default function ExpenseDataTable() {
         onDelete={handleDelete}
       />
 
-      {/* ── Create Expense Dialog ── */}
+      {/* ── Create Dialog ── */}
       <AppDialog
         open={createOpen}
         onOpenChange={setCreateOpen}
         title="Create Expense"
         description="Fill in the details below to submit a new expense request."
       >
-        {/* Just drop any form/component here as a child */}
         <ExpenseRequestForm onSuccess={() => setCreateOpen(false)} />
+      </AppDialog>
+
+      {/* ── Edit Dialog ── */}
+      {/* editingExpense !== null controls open state */}
+      <AppDialog
+        open={editingExpense !== null}
+        onOpenChange={(open) => {
+          if (!open) setEditingExpense(null); // 👈 clears selection when closed
+        }}
+        title="Edit Expense"
+        description="Update the details of your expense request."
+      >
+        {editingExpense && (
+          <ExpenseEditForm
+            expense={editingExpense}
+            onSuccess={() => setEditingExpense(null)} // 👈 closes dialog on success
+          />
+        )}
       </AppDialog>
     </div>
   );
