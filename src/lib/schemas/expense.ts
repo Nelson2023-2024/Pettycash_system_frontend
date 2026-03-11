@@ -49,7 +49,7 @@ export const decideExpenseSchema = z
     decision: z.enum(["approved", "rejected"], {
       message: "Decision must be approved or rejected",
     }),
-    reason: z.string().min(5, "Please provide a reason").optional(),
+    reason: z.string().optional(),
   })
   .refine(
     (data) => {

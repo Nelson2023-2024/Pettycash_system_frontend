@@ -43,6 +43,7 @@ interface ExpenseEditFormProps {
 
 export function ExpenseEditForm({ expense, onSuccess }: ExpenseEditFormProps) {
   const { mutate: updateExpense, isPending } = useUpdateExpense();
+  const isApproved = expense.status.toLowerCase() === "approved";
 
   // Pre-fill form with existing expense data
   const [formData, setFormData] = useState({
@@ -248,7 +249,16 @@ export function ExpenseEditForm({ expense, onSuccess }: ExpenseEditFormProps) {
         )}
       </Field>
 
-      <Button type="submit" className="w-full" disabled={isPending}>
+      {expense.status.toLowerCase() === "rejected" && expense.reason && (
+        <div className="rounded-md border border-destructive/40 bg-destructive/5 p-4 flex flex-col gap-1">
+          <p className="text-xs font-medium text-destructive uppercase tracking-widest">
+            Rejection Reason
+          </p>
+          <p className="text-sm text-muted-foreground">{expense.reason}</p>
+        </div>
+      )}
+
+      <Button type="submit" className="w-full" disabled={isPending || isApproved}>
         {isPending ? (
           <>
             <Spinner /> Saving changes...

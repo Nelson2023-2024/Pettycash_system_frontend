@@ -8,6 +8,8 @@ export interface Expense {
   created_at: string;
   mpesa_phone: string;
   receipt?: string;
+  employee_email: string;
+  reason?: string;
 }
 
 export interface CreateExpensePayload {

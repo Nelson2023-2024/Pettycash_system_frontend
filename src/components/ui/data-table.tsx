@@ -34,10 +34,11 @@ interface FilterColumn {
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
-  filterColumns?: FilterColumn[]; // 👈 pass as many filter inputs as you need
+  filterColumns?: FilterColumn[];
   isLoading?: boolean;
   onEdit?: (rows: TData[]) => void;
   onDelete?: (rows: TData[]) => void;
+  editLabel?: string;
 }
 
 export function DataTable<TData, TValue>({
@@ -47,6 +48,7 @@ export function DataTable<TData, TValue>({
   isLoading = false,
   onEdit,
   onDelete,
+  editLabel
 }: DataTableProps<TData, TValue>) {
   "use no memo";
 
@@ -115,7 +117,7 @@ export function DataTable<TData, TValue>({
               className="flex items-center gap-2"
             >
               <Pencil className="h-3.5 w-3.5" />
-              Edit
+              { editLabel ??"Edit"}
             </Button>
           )}
 
