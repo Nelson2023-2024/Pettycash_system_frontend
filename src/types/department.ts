@@ -3,6 +3,12 @@ export interface Department {
   name: string;
   code: string;
   description: string;
+  is_active: boolean;
+  line_manager: {
+    id: string;
+    name: string;
+    email: string;
+  } | null;
 }
 
 export interface CreateDepartmentPayload {
