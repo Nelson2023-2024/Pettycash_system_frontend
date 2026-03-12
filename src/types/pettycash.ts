@@ -23,5 +23,4 @@ export interface UpdatePettyCashPayload {
   description?: string;
   mpesa_phone_number?: string;
   minimum_threshold?: string;
-  account_type?: string;
 }

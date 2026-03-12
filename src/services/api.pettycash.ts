@@ -7,21 +7,21 @@ import { CreatePettyCashPayload, PettyCash, UpdatePettyCashPayload } from "@/typ
 
 // FO
 export const getPettyCashAccounts = () =>
-  axiosInstance.get<ApiResponse<PettyCash[]>>("/petty_cash/");
+  axiosInstance.get<ApiResponse<PettyCash[]>>("/finance/petty_cash/");
 
 
 export const getPettyCashById = (id: string) =>
-  axiosInstance.get<ApiResponse<PettyCash>>(`/petty_cash/${id}/`);
+  axiosInstance.get<ApiResponse<PettyCash>>(`/finance/petty_cash/${id}/`);
 
 
 // ADMIN, CFO
 export const createPettyCash = (payload: CreatePettyCashPayload) =>
-  axiosInstance.post<ApiResponse<PettyCash>>("/petty_cash/create/", payload,{
+  axiosInstance.post<ApiResponse<PettyCash>>("/finance/petty_cash/create/", payload,{
   });
 
 export const updatePettyCash = (id: string, payload: UpdatePettyCashPayload) =>
-  axiosInstance.patch<ApiResponse<PettyCash>>(`/petty_cash/${id}/update/`, payload);
+  axiosInstance.patch<ApiResponse<PettyCash>>(`/finance/petty_cash/${id}/update/`, payload);
 
 export const deactivatePettyCash = (id: string) =>
-  axiosInstance.delete<ApiResponse<PettyCash>>(`/petty_cash/${id}/deactivate/`);
+  axiosInstance.delete<ApiResponse<PettyCash>>(`/finance/petty_cash/${id}/deactivate/`);
 

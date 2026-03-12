@@ -19,17 +19,12 @@ export const createPettyCashSchema = z.object({
 
 // ── Update ───────────────────────────────────────────────
 // All fields optional — only send what changed
+// lib/schemas/pettycash.ts
 export const updatePettyCashSchema = z.object({
   name: z.string().min(3, "Name must be at least 3 characters").optional(),
-  description: z
-    .string()
-    .min(10, "Description must be at least 10 characters")
-    .optional(),
+  description: z.string().min(10, "Description must be at least 10 characters").optional(),
   mpesa_phone_number: mpesaPhone.optional(),
-  minimum_threshold: z.coerce
-    .number()
-    .positive("Minimum threshold must be greater than 0")
-    .optional(),
+  minimum_threshold: z.string().min(1, "Required").optional(), // keep as string
   account_type: z.string().optional(),
 });
 
