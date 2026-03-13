@@ -1,24 +1,36 @@
 "use client";
 import React, { useState } from "react";
-import { DropdownMenuItem, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
-import { Pencil, Trash2 } from "lucide-react";
+import {
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
+import { HandCoins, Pencil, Trash2 } from "lucide-react";
 import { PettyCash } from "@/types/pettycash";
 import { Button } from "../ui/button";
 import { Spinner } from "../ui/spinner";
 import { AppDialog } from "../ui/app-dialog";
 import { DeleteAlert } from "../ui/delete-alert";
-import { useDeactivatePettyCash, useGetPettyCashAccounts } from "@/hooks/usePettyCash";
+import {
+  useDeactivatePettyCash,
+  useGetPettyCashAccounts,
+} from "@/hooks/usePettyCash";
 import { PettyCashCard } from "./pettycash-card";
 import PettyCashCreateForm from "./pettycash-create-form";
 import { PettyCashEditForm } from "./pettycash-edit-form";
+import { TopUp } from "@/types/topup";
+import TopupForm from "../topup/topup-form";
 
 const PettyCashCardPage = () => {
   const { data: accounts, isPending } = useGetPettyCashAccounts();
-  const { mutate: deactivatePettyCash, isPending: isDeleting } = useDeactivatePettyCash();
+  const { mutate: deactivatePettyCash, isPending: isDeleting } =
+    useDeactivatePettyCash();
 
   const [createOpen, setCreateOpen] = useState(false);
   const [editingAccount, setEditingAccount] = useState<PettyCash | null>(null);
-  const [deletingAccount, setDeletingAccount] = useState<PettyCash | null>(null);
+  const [deletingAccount, setDeletingAccount] = useState<PettyCash | null>(
+    null,
+  );
+  const [topupAccount, setTopupAccount] = useState<PettyCash | null>(null);
 
   if (isPending) {
     return (
@@ -49,6 +61,9 @@ const PettyCashCardPage = () => {
                 <DropdownMenuItem onClick={() => setEditingAccount(account)}>
                   <Pencil className="size-3.5" /> Edit account
                 </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setTopupAccount(account)}>
+                  <HandCoins className="size-3.5" /> Request Topup
+                </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
                   className="text-destructive"
@@ -73,7 +88,9 @@ const PettyCashCardPage = () => {
 
       <AppDialog
         open={editingAccount !== null}
-        onOpenChange={(open) => { if (!open) setEditingAccount(null); }}
+        onOpenChange={(open) => {
+          if (!open) setEditingAccount(null);
+        }}
         title="Edit Petty Cash Account"
         description="Update the details of this petty cash account."
       >
@@ -84,10 +101,24 @@ const PettyCashCardPage = () => {
           />
         )}
       </AppDialog>
+      
+        {/* TopUp Dialog */}
+      <AppDialog
+        open={topupAccount !== null}
+        onOpenChange={(open) => {
+          if (!open) setTopupAccount(null);
+        }}
+        title="Request Topup"
+        description="Submit a request to top up this petty cash account."
+      >
+        {topupAccount && <TopupForm pettycashAccountId={topupAccount.id} />}
+      </AppDialog>
 
       <DeleteAlert
         open={deletingAccount !== null}
-        onOpenChange={(open) => { if (!open) setDeletingAccount(null); }}
+        onOpenChange={(open) => {
+          if (!open) setDeletingAccount(null);
+        }}
         isPending={isDeleting}
         description={`This will permanently delete "${deletingAccount?.name}". This action cannot be undone.`}
         onConfirm={() => {

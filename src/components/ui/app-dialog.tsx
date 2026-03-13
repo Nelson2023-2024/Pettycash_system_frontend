@@ -25,9 +25,9 @@ export function AppDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-lg max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>{title}</DialogTitle>
+          <DialogTitle className="text-center">{title}</DialogTitle>
           {description && (
-            <DialogDescription>{description}</DialogDescription>
+            <DialogDescription className="text-center">{description}</DialogDescription>
           )}
         </DialogHeader>
 
