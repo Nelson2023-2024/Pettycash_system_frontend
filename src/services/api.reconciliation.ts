@@ -8,16 +8,18 @@ import {
 
 // EMPLOYEE — own reconciliations
 export const getMyReconciliations = () =>
-  axiosInstance.get<ApiResponse<Reconciliation[]>>("/reconciliation/mine/");
+  axiosInstance.get<ApiResponse<Reconciliation[]>>(
+    "/finance/reconciliation/mine/",
+  );
 
 // FO — all reconciliations
 export const getAllReconciliations = () =>
-  axiosInstance.get<ApiResponse<Reconciliation[]>>("/reconciliation/");
+  axiosInstance.get<ApiResponse<Reconciliation[]>>("/finance/reconciliation/");
 
 // EMPLOYEE, FO — single reconciliation
 export const getReconciliationById = (reconciliation_id: string) =>
   axiosInstance.get<ApiResponse<Reconciliation>>(
-    `/reconciliation/${reconciliation_id}/`,
+    `/finance/reconciliation/${reconciliation_id}/`,
   );
 
 // EMPLOYEE — submit receipt after disbursement
@@ -27,7 +29,7 @@ export const submitReconciliation = (
   payload: SubmitReconciliationPayload,
 ) => {
   return axiosInstance.post<ApiResponse<Reconciliation>>(
-    `/reconciliation/${reconciliation_id}/submit/`,
+    `/finance/reconciliation/${reconciliation_id}/submit/`,
     payload,
     { headers: { "Content-Type": "multipart/form-data" } },
   );
@@ -39,6 +41,6 @@ export const reviewReconciliation = (
   payload: ReviewReconciliationPayload,
 ) =>
   axiosInstance.post<ApiResponse<Reconciliation>>(
-    `/reconciliation/${reconciliation_id}/review/`,
+    `/finance/reconciliation/${reconciliation_id}/review/`,
     payload,
   );
