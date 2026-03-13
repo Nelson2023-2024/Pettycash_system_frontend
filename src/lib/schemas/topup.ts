@@ -3,7 +3,10 @@ import z from "zod";
 
 // ── Create ───────────────────────────────────────────────
 export const createTopUpSchema = z.object({
-  amount: z.coerce.number().positive("Amount must be greater than 0"),
+  amount: z.coerce
+    .number()
+    .positive("Amount must be greater than 0")
+    .max(20000, "Top-up amount exceeds allowed limit of  KES 50,000"),
   request_reason: z
     .string()
     .min(10, "Please provide a reason of at least 10 characters"),
@@ -29,10 +32,7 @@ export const decideTopUpSchema = z
     decision: z.enum(["approved", "rejected"], {
       message: "Decision must be approved or rejected",
     }),
-    decision_reason: z
-      .string()
-      .min(5, "Please provide a reason")
-      .optional(),
+    decision_reason: z.string().min(5, "Please provide a reason").optional(),
   })
   .refine(
     (data) => {
@@ -42,7 +42,7 @@ export const decideTopUpSchema = z
     {
       message: "A reason is required when rejecting",
       path: ["decision_reason"],
-    }
+    },
   );
 
 // ── Inferred Types ───────────────────────────────────────
