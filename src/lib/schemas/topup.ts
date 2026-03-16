@@ -32,7 +32,7 @@ export const decideTopUpSchema = z
     decision: z.enum(["approved", "rejected"], {
       message: "Decision must be approved or rejected",
     }),
-    decision_reason: z.string().min(5, "Please provide a reason").optional(),
+    decision_reason: z.string().optional(),
   })
   .refine(
     (data) => {
