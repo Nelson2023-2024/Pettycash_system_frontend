@@ -7,8 +7,16 @@ export interface Reconciliation {
   surplus_returned: string | null;
   comments: string | null;
   status: string;
-  submitted_by: string;
-  approved_by: string | null;
+  submitted_by: {
+    id: string;
+    name: string;
+    email: string;
+  } | null;
+  approved_by: {
+    id: string;
+    name: string;
+    email: string;
+  } | null;
   approved_at: string | null;
   receipt: string | null;
   is_active: boolean;
