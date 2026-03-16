@@ -40,7 +40,7 @@ export const reviewReconciliation = (
   reconciliation_id: string,
   payload: ReviewReconciliationPayload,
 ) =>
-  axiosInstance.post<ApiResponse<Reconciliation>>(
+  axiosInstance.patch<ApiResponse<Reconciliation>>(
     `/finance/reconciliation/${reconciliation_id}/review/`,
     payload,
   );
