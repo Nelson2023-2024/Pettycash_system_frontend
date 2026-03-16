@@ -23,12 +23,12 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Pencil, Trash2 } from "lucide-react";
+import { Pencil, Trash2, ClipboardCheck } from "lucide-react";
 import { Spinner } from "./spinner";
 
 interface FilterColumn {
-  column: string; // must match the accessorKey in your columns definition
-  placeholder: string; // text shown in the search input
+  column: string;
+  placeholder: string;
 }
 
 interface DataTableProps<TData, TValue> {
@@ -38,7 +38,9 @@ interface DataTableProps<TData, TValue> {
   isLoading?: boolean;
   onEdit?: (rows: TData[]) => void;
   onDelete?: (rows: TData[]) => void;
+  onReview?: (rows: TData[]) => void;  // ← added
   editLabel?: string;
+  reviewLabel?: string;                // ← added
 }
 
 export function DataTable<TData, TValue>({
@@ -48,16 +50,15 @@ export function DataTable<TData, TValue>({
   isLoading = false,
   onEdit,
   onDelete,
-  editLabel
+  onReview,
+  editLabel,
+  reviewLabel,
 }: DataTableProps<TData, TValue>) {
   "use no memo";
 
   const [sorting, setSorting] = React.useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    [],
-  );
-  const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>({});
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
+  const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
 
   const table = useReactTable({
@@ -84,19 +85,16 @@ export function DataTable<TData, TValue>({
     <div className="w-full">
       {/* ── Top bar ── */}
       <div className="flex items-center justify-between py-4 gap-4 flex-wrap">
-        {/* Filter inputs — one per filterColumns entry */}
         <div className="flex items-center gap-2 flex-wrap">
           {filterColumns?.map(({ column, placeholder }) => (
             <Input
               key={column}
               placeholder={placeholder}
-              value={
-                (table.getColumn(column)?.getFilterValue() as string) ?? ""
-              }
+              value={(table.getColumn(column)?.getFilterValue() as string) ?? ""}
               onChange={(e) =>
                 table.getColumn(column)?.setFilterValue(e.target.value)
               }
-              className="max-w-[200px]"
+              className="max-w-50"
             />
           ))}
         </div>
@@ -109,6 +107,7 @@ export function DataTable<TData, TValue>({
             pointerEvents: hasSelection ? "auto" : "none",
           }}
         >
+          {/* Edit — single row only */}
           {selectedRows.length === 1 && onEdit && (
             <Button
               variant="outline"
@@ -117,10 +116,24 @@ export function DataTable<TData, TValue>({
               className="flex items-center gap-2"
             >
               <Pencil className="h-3.5 w-3.5" />
-              { editLabel ??"Edit"}
+              {editLabel ?? "Edit"}
             </Button>
           )}
 
+          {/* Review — single row only */}
+          {selectedRows.length === 1 && onReview && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => onReview(selectedRows)}
+              className="flex items-center gap-2"
+            >
+              <ClipboardCheck className="h-3.5 w-3.5" />
+              {reviewLabel ?? "Review"}
+            </Button>
+          )}
+
+          {/* Delete — single or multiple rows */}
           {onDelete && (
             <Button
               variant="destructive"
@@ -157,12 +170,9 @@ export function DataTable<TData, TValue>({
           <TableBody>
             {isLoading ? (
               <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-24 text-center"
-                >
+                <TableCell colSpan={columns.length} className="h-24 text-center">
                   <div className="flex justify-center items-center h-full">
-                    <Spinner className="size-10"/>
+                    <Spinner className="size-10" />
                   </div>
                 </TableCell>
               </TableRow>
@@ -174,10 +184,7 @@ export function DataTable<TData, TValue>({
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext(),
-                      )}
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </TableCell>
                   ))}
                 </TableRow>
