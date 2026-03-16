@@ -12,7 +12,7 @@ export const submitReconciliationSchema = z.object({
     .positive("Reconciled amount must be greater than 0"),
   surplus_returned: z.coerce
     .number()
-    .min(1, "Surplus returned cannot be negative and is required"),
+    .min(0, "Surplus returned cannot be negative and is required"),
   comments: z.string().optional(),
   receipt: z.instanceof(File, { message: "A receipt file is required" }),
 });
@@ -26,7 +26,7 @@ export const reviewReconciliationSchema = z
     decision: z.enum(["completed", "rejected"], {
       message: "Decision must be completed or rejected",
     }),
-    comments: z.string().min(5, "Please provide a comment").optional(),
+    comments: z.string().min(0, "Please provide a comment").optional(),
   })
   .refine(
     (data) => {
