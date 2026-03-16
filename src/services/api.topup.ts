@@ -16,7 +16,7 @@ export const getMyTopUps = () =>
 
 // CFO, FO — approve or reject
 export const decideTopUp = (topup_id: string, payload: DecideTopUpPayload) =>
-  axiosInstance.post<ApiResponse<TopUp>>(`/finance/topup/${topup_id}/decide/`, payload);
+  axiosInstance.patch<ApiResponse<TopUp>>(`/finance/topup/${topup_id}/decide/`, payload);
 
 // FO — disburse approved topup
 export const disburseTopUp = (topup_id: string) =>
