@@ -1,16 +1,30 @@
 export interface TopUp {
   id: string;
-  account_name: string;
   amount: string;
   request_reason: string;
   decision_reason: string;
-  status: string;
-  event_type: string;
-  requested_by: string;
-  decision_by: string | null;
   is_auto_triggered: boolean;
   is_active: boolean;
   created_at: string;
+  updated_at: string;
+  status: string | null;
+  status_code: string | null;
+  event_type: string | null;
+  pettycash_account: {
+    id: string;
+    name: string;
+    current_balance: string;
+  } | null;
+  requested_by: {
+    id: string;
+    name: string;
+    email: string;
+  } | null;
+  decision_by: {
+    id: string;
+    name: string;
+    email: string;
+  } | null;
 }
 
 export interface CreateTopUpPayload {
