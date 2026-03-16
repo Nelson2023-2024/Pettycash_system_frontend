@@ -1,27 +1,80 @@
 "use client";
-import React from "react";
+import React, {
+  DO_NOT_USE_OR_YOU_WILL_BE_FIRED_EXPERIMENTAL_REACT_NODES,
+} from "react";
 import { Field, FieldError, FieldGroup, FieldLabel } from "../ui/field";
 import { Resolver, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { CreateTopUpInput, createTopUpSchema } from "@/lib/schemas/topup";
+import {
+  CreateTopUpInput,
+  createTopUpSchema,
+  UpdateTopUpInput,
+} from "@/lib/schemas/topup";
 import FormInput from "../ui/FormInput";
 import { Textarea } from "../ui/textarea";
-import { useCreateTopUp } from "@/hooks/useTopup";
+import { useCreateTopUp, useUpdateTopUp } from "@/hooks/useTopup";
 import { Button } from "../ui/button";
 import { Spinner } from "../ui/spinner";
+import { TopUp } from "@/types/topup";
 
-const TopupForm = ({ pettycashAccountId }: { pettycashAccountId: string }) => {
-  const { mutate: createTopUp, isPending } = useCreateTopUp();
+interface TopupFormProps {
+  // passed from PettyCashCardPage when topping up a specific account optional — if not passed, falls back to the first active account
+  pettycashAccountId?: string;
+  // passed from TopupDataTable when editing an existing top-up presence of this prop switches form to edit mode
+  topup?: TopUp;
+  // called after successful create or update — closes the dialog
+  onSuccess?: () => void;
+}
+const TopupForm = ({
+  pettycashAccountId,
+  topup,
+  onSuccess,
+}: TopupFormProps) => {
+  // true when editing an existing top-up, false when creating a new one
+  const isEdit = !!topup;
+  const { mutate: createTopUp, isPending: isCreating } = useCreateTopUp();
+  const { mutate: updateTopUp, isPending: isUpdating } = useUpdateTopUp();
+
+  const isPending = isCreating || isUpdating;
+
+  // in edit mode, account id comes from the topup object itself
+  const accountId = isEdit ? topup.pettycash_account?.id : pettycashAccountId;
+
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<CreateTopUpInput>({
-    resolver: zodResolver(createTopUpSchema) as Resolver<CreateTopUpInput>,
+  } = useForm<CreateTopUpInput | UpdateTopUpInput>({
+    resolver: zodResolver(createTopUpSchema) as Resolver<
+      CreateTopUpInput | UpdateTopUpInput
+    >,
+    // pre-fills form when editing — same pattern as DepartmentForm
+    defaultValues: isEdit
+      ? {
+          amount: Number(topup.amount),
+          request_reason: topup.request_reason,
+        }
+      : //on creat no default values
+        {},
   });
 
-  function onSubmit(data: CreateTopUpInput) {
-    createTopUp({ pettycash_account_id: pettycashAccountId, payload: data });
+  function onSubmit(data: CreateTopUpInput | UpdateTopUpInput) {
+    if (isEdit) {
+      updateTopUp(
+        {
+          topup_id: topup.id,
+          payload: data as UpdateTopUpInput,
+        },
+        //close the edit modal
+        { onSuccess: () => onSuccess?.() },
+      );
+    } else {
+      if (!accountId) return;
+      createTopUp({
+        pettycash_account_id: accountId!,
+        payload: data as CreateTopUpInput,
+      });
+    }
   }
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -33,6 +86,7 @@ const TopupForm = ({ pettycashAccountId }: { pettycashAccountId: string }) => {
           {...register("amount")}
         />
         <FieldError>{errors.amount?.message}</FieldError>
+
         <Field>
           <FieldLabel>Description</FieldLabel>
           <Textarea
@@ -43,14 +97,16 @@ const TopupForm = ({ pettycashAccountId }: { pettycashAccountId: string }) => {
           <FieldError>{errors.request_reason?.message}</FieldError>
         </Field>
         <Field>
-          <Button type="submit" disabled={isPending}>
+          <Button type="submit" disabled={isPending || (!isEdit && !accountId)}>
             {isPending ? (
               <>
                 <Spinner className="size-4" />
-                Submitting Topup....
+                {isEdit ? "Saving changes..." : "Submitting Top-Up..."}
               </>
+            ) : isEdit ? (
+              "Save Changes"
             ) : (
-              "Submit TopUp"
+              "Submit Top-up"
             )}
           </Button>
         </Field>
