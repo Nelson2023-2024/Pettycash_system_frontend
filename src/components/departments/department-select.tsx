@@ -28,7 +28,7 @@ export function DepartmentSelect({
           placeholder={
             isPending ? (
               <>
-                <Spinner /> Loading....
+                <Spinner className="text-center size-6"/> Loading Departments....
               </>
             ) : (
               placeholder
