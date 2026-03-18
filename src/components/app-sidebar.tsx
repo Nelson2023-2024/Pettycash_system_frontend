@@ -23,10 +23,19 @@ import { allNavItems } from "@/config/navigation";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Spinner } from "./ui/spinner";
+import { Avatar, AvatarBadge, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export function AppSidebar() {
   const { data: user, isLoading } = useAuthMe();
   const pathname = usePathname();
+  console.log(user);
+  const initials = user?.fullname
+    ? user.fullname
+        .split(" ")
+        .map((name) => name[0])
+        .join("")
+        .toUpperCase()
+    : "??";
 
   const permissions = new Set(user?.permissions ?? []);
 
@@ -103,12 +112,19 @@ export function AppSidebar() {
       <SidebarFooter>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton tooltip={user?.fullname ?? "User"}>
-              <User2 />
-              <div className="flex flex-col gap-0.5 group-data-[collapsible=icon]:hidden">
-                <span>{user?.fullname ?? "..."}</span>
-                <span className="text-xs text-primary">{user?.role}</span>
-              </div>
+            <SidebarMenuButton asChild tooltip={user?.fullname ?? "User"}>
+              <Link href={"/profile"}>
+                <Avatar>
+                  <AvatarImage
+                    src={user?.avatar_url ?? "/placeholder-avatar.png"}
+                  />
+                  <AvatarFallback>{initials}</AvatarFallback>
+                </Avatar>
+                <div className="flex flex-col gap-0.5 group-data-[collapsible=icon]:hidden">
+                  <span>{user?.fullname ?? "..."}</span>
+                  <span className="text-xs text-primary">{user?.role}</span>
+                </div>
+              </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
