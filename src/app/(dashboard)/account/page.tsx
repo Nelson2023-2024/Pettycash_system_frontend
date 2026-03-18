@@ -1,10 +1,12 @@
-import PettyCashCreateForm from '@/components/pettycash/pettycash-create-form'
-import React from 'react'
+import PettyCashCardDetail from '@/components/pettycash/pettycash-card-page'
+import PettyCashDataTable from '@/components/pettycash/pettycash-data-table'
+
 
 const PettyCashAccount = () => {
   return (
     <div className='w-[80%] mx-auto'>
-      <PettyCashCreateForm/>
+      <PettyCashCardDetail/>
+      <PettyCashDataTable/>
     </div>
   )
 }
