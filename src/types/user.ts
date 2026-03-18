@@ -1,4 +1,5 @@
 export interface User {
+  id: string;
   email: string;
   first_name: string;
   last_name: string;
@@ -7,9 +8,13 @@ export interface User {
   national_id: string | null;
   avatar_url: string | null;
   last_login: string | null;
-  department: string | null;
+  department: {
+    id: string;
+    name: string;
+  } | null;
   is_active: boolean;
   role: string;
+  role_code: string;
   status: string;
 }
 
