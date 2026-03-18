@@ -17,7 +17,6 @@ import {
 import { PettyCashCard } from "./pettycash-card";
 import PettyCashCreateForm from "./pettycash-create-form";
 import { PettyCashEditForm } from "./pettycash-edit-form";
-import { TopUp } from "@/types/topup";
 import TopupForm from "../topup/topup-form";
 
 const PettyCashCardPage = () => {
