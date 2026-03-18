@@ -25,6 +25,11 @@ export interface TopUp {
     name: string;
     email: string;
   } | null;
+  // ── Disbursement financial details ──
+  previous_balance: string | null;
+  new_balance: string | null;
+  disbursed_by_email: string | null;
+  disbursed_at: string | null;
 }
 
 export interface CreateTopUpPayload {

@@ -46,5 +46,5 @@ export interface UpdateProfilePayload {
   other_name?: string;
   phone_number?: string;
   national_id?: string;
-  avatar_url?: string;
+  avatar_url?: File;
 }
