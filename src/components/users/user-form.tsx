@@ -1,46 +1,86 @@
 "use client";
 import React from "react";
 import { Controller, Resolver, useForm } from "react-hook-form";
-import { Field, FieldError, FieldGroup, FieldLabel } from "../ui/field";
+import {
+  Field,
+  FieldContent,
+  FieldDescription,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+  FieldTitle,
+} from "../ui/field";
 import FormInput from "../ui/FormInput";
 import { Button } from "../ui/button";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useCreateUser } from "@/hooks/useUser";
+import { useCreateUser, useUpdateUser } from "@/hooks/useUser";
 import { Spinner } from "../ui/spinner";
 
 import { DepartmentSelect } from "../departments/department-select";
-import { CreateUserInput, createUserSchema } from "@/lib/schemas/user";
+import {
+  CreateUserInput,
+  createUserSchema,
+  UpdateUserInput,
+  updateUserSchema,
+} from "@/lib/schemas/user";
 import { RoleSelect } from "./role-select";
+import { User } from "@/types/user";
+import { Checkbox } from "../ui/checkbox";
 
 interface UserFormProps {
+  user?: User;
   onSuccess?: () => void;
 }
 
-const UserForm = ({ onSuccess }: UserFormProps) => {
-  const { mutate: createUser, isPending } = useCreateUser();
+const UserForm = ({ onSuccess, user }: UserFormProps) => {
+  const isEdit = !!user;
+
+  const { mutate: createUser, isPending: isCreating } = useCreateUser();
+  const { mutate: updateUser, isPending: isUpdating } = useUpdateUser();
+  const isPending = isCreating || isUpdating;
 
   const {
     register,
     handleSubmit,
     control,
     formState: { errors },
-  } = useForm<CreateUserInput>({
-    resolver: zodResolver(createUserSchema) as Resolver<CreateUserInput>,
-    defaultValues: {
-      first_name: "",
-      last_name: "",
-      other_name: "",
-      email: "",
-      password: "",
-      phone_number: "",
-      national_id: "",
-      role: "EMP",
-      department: "",
-    },
+  } = useForm<CreateUserInput | UpdateUserInput>({
+    resolver: zodResolver(
+      isEdit ? updateUserSchema : createUserSchema,
+    ) as Resolver<CreateUserInput | UpdateUserInput>,
+    defaultValues: isEdit
+      ? {
+          first_name: user.first_name ?? "",
+          last_name: user.last_name ?? "",
+          other_name: user.other_name ?? "",
+          email: user.email ?? "",
+          phone_number: user.phone_number ?? "",
+          national_id: user.national_id ?? "",
+          role: user.role_code ?? "",
+          department: user.department?.id ?? "",
+        }
+      : {
+          first_name: "",
+          last_name: "",
+          other_name: "",
+          email: "",
+          password: "",
+          phone_number: "",
+          national_id: "",
+          role: "EMP",
+          department: "",
+        },
   });
 
-  function onSubmit(data: CreateUserInput) {
-    createUser(data, { onSuccess: () => onSuccess?.() });
+  function onSubmit(data: CreateUserInput | UpdateUserInput) {
+    if (isEdit) {
+      updateUser(
+        { user_id: user.id, payload: data as UpdateUserInput },
+        { onSuccess: () => onSuccess?.() },
+      );
+    } else {
+      createUser(data as CreateUserInput, { onSuccess: () => onSuccess?.() });
+    }
   }
 
   return (
@@ -90,17 +130,24 @@ const UserForm = ({ onSuccess }: UserFormProps) => {
         <FieldGroup className="grid grid-cols-2">
           <FormInput
             label="National ID"
+            type="number"
             placeholder="12345678"
             {...register("national_id")}
             error={errors.national_id?.message}
           />
-          <FormInput
-            label="Password"
-            type="password"
-            placeholder="••••••••"
-            {...register("password")}
-            error={errors.password?.message}
-          />
+          {/* only show when the user is not passed in */}
+          {!isEdit && (
+            <FormInput
+              label="Password"
+              type="password"
+              placeholder="••••••••"
+              {...register("password")}
+              error={
+                (errors as Record<string, { message?: string }>).password
+                  ?.message
+              }
+            />
+          )}
         </FieldGroup>
 
         {/* ── Role & Department ── */}
@@ -133,11 +180,41 @@ const UserForm = ({ onSuccess }: UserFormProps) => {
           </Field>
         </FieldGroup>
 
+        {isEdit && (
+          <Field>
+            <FieldLabel>Account Status</FieldLabel>
+            <Field
+              orientation="horizontal"
+              className="rounded-md border border-border px-3 py-2.5"
+            >
+              <Controller
+                name="is_active"
+                control={control}
+                render={({ field }) => (
+                  <Checkbox
+                    id="is_active"
+                    checked={field.value ?? true}
+                    onCheckedChange={field.onChange}
+                  />
+                )}
+              />
+              <FieldContent>
+                <FieldTitle>Active</FieldTitle>
+                <FieldDescription>
+                  Inactive users cannot log in or access any part of the system.
+                </FieldDescription>
+              </FieldContent>
+            </Field>
+          </Field>
+        )}
+
         <Button type="submit" className="w-full" disabled={isPending}>
           {isPending ? (
             <>
-              <Spinner /> Creating User...
+              <Spinner /> {isEdit ? "Saving changes..." : "Creating User..."}
             </>
+          ) : isEdit ? (
+            "Save Changes"
           ) : (
             "Create User"
           )}
