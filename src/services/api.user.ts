@@ -22,4 +22,6 @@ export const updateUser = (user_id: string, payload: UpdateUserPayload) =>
 
 // AUTHENTICATED USER
 export const updateProfile = (payload: UpdateProfilePayload) =>
-  axiosInstance.patch<ApiResponse<User>>("/users/profile/update/", payload);
+  axiosInstance.patch<ApiResponse<User>>("/users/profile/update/", payload, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });

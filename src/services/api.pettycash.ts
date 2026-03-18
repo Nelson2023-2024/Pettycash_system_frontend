@@ -3,7 +3,7 @@
 
 import { axiosInstance } from "@/lib/axios";
 import { ApiResponse } from "@/types/common";
-import { CreatePettyCashPayload, PettyCash, UpdatePettyCashPayload } from "@/types/pettycash";
+import { CreatePettyCashPayload, PettyCash, PettyCashAccountActivity, UpdatePettyCashPayload } from "@/types/pettycash";
 
 // FO
 export const getPettyCashAccounts = () =>
@@ -24,4 +24,7 @@ export const updatePettyCash = (id: string, payload: UpdatePettyCashPayload) =>
 
 export const deactivatePettyCash = (id: string) =>
   axiosInstance.delete<ApiResponse<PettyCash>>(`/finance/petty_cash/${id}/deactivate/`);
+
+export const getPettyCashActivity = () =>
+  axiosInstance.get<ApiResponse<PettyCashAccountActivity>>("/finance/petty_cash/activity/");
 
