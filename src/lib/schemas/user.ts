@@ -13,4 +13,14 @@ export const createUserSchema = z.object({
   department: z.string().optional(),
 });
 
+export const updateProfileSchema = z.object({
+  first_name: z.string().min(2, "First name must be at least 2 characters").optional(),
+  last_name: z.string().min(2, "Last name must be at least 2 characters").optional(),
+  other_name: z.string().optional(),
+  phone_number: z.string().optional(),
+  national_id: z.string().optional(),
+  avatar_url: z.instanceof(File).optional(),
+});
+
+export type UpdateProfileInput = z.infer<typeof updateProfileSchema>;
 export type CreateUserInput = z.infer<typeof createUserSchema>;
