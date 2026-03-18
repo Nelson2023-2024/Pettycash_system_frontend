@@ -4,6 +4,7 @@ import {
   getPettyCashById,
   updatePettyCash,
   deactivatePettyCash,
+  getPettyCashActivity,
 } from "@/services/api.pettycash";
 import { UpdatePettyCashPayload } from "@/types/pettycash";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -81,6 +82,16 @@ export function useDeactivatePettyCash() {
     },
     onError: (error: Error) => {
       toast.error(error.message);
+    },
+  });
+}
+
+export function useGetPettyCashActivity() {
+  return useQuery({
+    queryKey: ["pettyCashActivity"],
+    queryFn: async () => {
+      const { data } = await getPettyCashActivity();
+      return data.data;
     },
   });
 }
