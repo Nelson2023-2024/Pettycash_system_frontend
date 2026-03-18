@@ -49,11 +49,7 @@ export const expenseColumns: ColumnDef<Expense>[] = [
     ),
     cell: ({ row }) => {
       const title: string = row.getValue("title");
-      return (
-        <span className="text-sm font-medium">
-          {title}
-        </span>
-      );
+      return <span className="text-sm font-medium">{title}</span>;
     },
   },
 
@@ -99,16 +95,79 @@ export const expenseColumns: ColumnDef<Expense>[] = [
   // ── Created At ──
   {
     accessorKey: "created_at",
-    size: 130,
-    header: "Created",
-    cell: ({ row }) => (
-      <span className="text-sm text-muted-foreground">
-        {new Date(row.getValue("created_at")).toLocaleDateString("en-KE", {
-          day: "numeric",
-          month: "short",
-          year: "numeric",
-        })}
-      </span>
+    size: 150,
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        className="-ml-3"
+      >
+        Created at
+        <ArrowUpDown className="ml-2 h-4 w-4" />
+      </Button>
     ),
+    cell: ({ row }) => {
+      const date = new Date(row.getValue("created_at"));
+      return (
+        <div className="flex flex-col">
+          <span className="text-sm font-medium">
+            {date.toLocaleDateString("en-KE", {
+              day: "numeric",
+              month: "short",
+              year: "numeric",
+            })}
+          </span>
+          <span className="text-xs text-muted-foreground">
+            {date.toLocaleTimeString("en-KE", {
+              hour: "2-digit",
+              minute: "2-digit",
+            })}
+          </span>
+        </div>
+      );
+    },
+  },
+  // ── Transaction Cost ──
+  {
+    accessorKey: "transaction_cost",
+    size: 130,
+    header: () => <div className="text-right">Transaction Cost</div>,
+    cell: ({ row }) => {
+      const cost = row.getValue("transaction_cost") as string | null;
+      if (!cost)
+        return (
+          <div className="text-right text-muted-foreground text-sm">—</div>
+        );
+      const formatted = new Intl.NumberFormat("en-KE", {
+        style: "currency",
+        currency: "KES",
+        minimumFractionDigits: 0,
+      }).format(parseFloat(cost));
+      return <div className="text-right tabular-nums text-sm">{formatted}</div>;
+    },
+  },
+
+  // ── Total Deduction ──
+  {
+    accessorKey: "total_deduction",
+    size: 140,
+    header: () => <div className="text-right">Total Deduction</div>,
+    cell: ({ row }) => {
+      const total = row.getValue("total_deduction") as string | null;
+      if (!total)
+        return (
+          <div className="text-right text-muted-foreground text-sm">—</div>
+        );
+      const formatted = new Intl.NumberFormat("en-KE", {
+        style: "currency",
+        currency: "KES",
+        minimumFractionDigits: 0,
+      }).format(parseFloat(total));
+      return (
+        <div className="text-right tabular-nums text-sm font-medium">
+          {formatted}
+        </div>
+      );
+    },
   },
 ];
