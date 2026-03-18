@@ -137,6 +137,80 @@ export const topupColumns: ColumnDef<TopUp>[] = [
       );
     },
   },
+  // ── Previous Balance ──
+  // {
+  //   accessorKey: "previous_balance",
+  //   size: 140,
+  //   header: () => <div className="text-right">Balance Before</div>,
+  //   cell: ({ row }) => {
+  //     const val = row.getValue("previous_balance") as string | null;
+  //     if (!val)
+  //       return (
+  //         <div className="text-right text-muted-foreground text-sm">—</div>
+  //       );
+  //     return (
+  //       <div className="text-right tabular-nums text-sm">
+  //         {new Intl.NumberFormat("en-KE", {
+  //           style: "currency",
+  //           currency: "KES",
+  //           minimumFractionDigits: 0,
+  //         }).format(parseFloat(val))}
+  //       </div>
+  //     );
+  //   },
+  // },
+
+  // // ── New Balance ──
+  // {
+  //   accessorKey: "new_balance",
+  //   size: 140,
+  //   header: () => <div className="text-right">Balance After</div>,
+  //   cell: ({ row }) => {
+  //     const val = row.getValue("new_balance") as string | null;
+  //     if (!val)
+  //       return (
+  //         <div className="text-right text-muted-foreground text-sm">—</div>
+  //       );
+  //     return (
+  //       <div className="text-right tabular-nums text-sm font-medium">
+  //         {new Intl.NumberFormat("en-KE", {
+  //           style: "currency",
+  //           currency: "KES",
+  //           minimumFractionDigits: 0,
+  //         }).format(parseFloat(val))}
+  //       </div>
+  //     );
+  //   },
+  // },
+
+  // // ── Disbursed At ──
+  // {
+  //   accessorKey: "disbursed_at",
+  //   size: 150,
+  //   header: "Disbursed At",
+  //   cell: ({ row }) => {
+  //     const val = row.getValue("disbursed_at") as string | null;
+  //     if (!val) return <span className="text-sm text-muted-foreground">—</span>;
+  //     const date = new Date(val);
+  //     return (
+  //       <div className="flex flex-col">
+  //         <span className="text-sm">
+  //           {date.toLocaleDateString("en-KE", {
+  //             day: "numeric",
+  //             month: "short",
+  //             year: "numeric",
+  //           })}
+  //         </span>
+  //         <span className="text-xs text-muted-foreground">
+  //           {date.toLocaleTimeString("en-KE", {
+  //             hour: "2-digit",
+  //             minute: "2-digit",
+  //           })}
+  //         </span>
+  //       </div>
+  //     );
+  //   },
+  // },
 
   // ── Auto Triggered ──
   {
