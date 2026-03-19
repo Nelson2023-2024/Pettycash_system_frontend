@@ -10,6 +10,7 @@ import {
   ScrollText,
   BadgeDollarSign,
   LucideIcon,
+  Bell,
 } from "lucide-react";
 
 export interface NavItem {
@@ -115,6 +116,17 @@ export const allNavItems: NavGroup[] = [
         icon: Building2,
         href: "/admin/departments",
         permission: "can_view_all_departments",
+      },
+    ],
+  },
+  {
+    label: "Notifications",
+    items: [
+      {
+        title: "Notifications",
+        icon: Bell,
+        href: "/notifications",
+        permission: "can_view_notifications",
       },
     ],
   },
