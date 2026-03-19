@@ -54,7 +54,7 @@ export const userColumns: ColumnDef<User>[] = [
         `${user.first_name?.[0] ?? ""}${user.last_name?.[0] ?? ""}`.toUpperCase();
       return (
         <div className="flex items-center gap-3">
-          <Avatar>
+          <Avatar className="border">
             <AvatarImage src={user.avatar_url ?? undefined} />
             <AvatarFallback>{initials}</AvatarFallback>
           </Avatar>
