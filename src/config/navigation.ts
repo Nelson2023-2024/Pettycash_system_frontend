@@ -49,12 +49,6 @@ export const allNavItems: NavGroup[] = [
     label: "My Expenses",
     items: [
       {
-        title: "New Request",
-        icon: FilePlus,
-        href: "/expenses/new",
-        permission: "can_create_expense",
-      },
-      {
         title: "My Requests",
         icon: ClipboardList,
         href: "/expenses",
