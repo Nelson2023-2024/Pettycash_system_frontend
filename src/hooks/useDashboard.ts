@@ -1,11 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
-import { getDashboardStatsRequest } from "@/services/api.dashboard";
+import { getDashboard } from "@/services/api.dashboard";
 
-export function useDashboardStats() {
+export function useGetDashboard() {
   return useQuery({
     queryKey: ["dashboardStats"],
     queryFn: async () => {
-      const { data } = await getDashboardStatsRequest();
+      const { data } = await getDashboard();
       return data.data;
     },
     staleTime: 60 * 1000, // 1 minute
