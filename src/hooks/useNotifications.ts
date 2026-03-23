@@ -10,11 +10,11 @@ import toast from "react-hot-toast";
  * Fetches all notifications for the authenticated user
  * including unread count in the same response.
  */
-export function useGetMyNotifications() {
+export function useGetMyNotifications(page=1,pageSize=20) {
   return useQuery({
-    queryKey: ["notifications"],
+    queryKey: ["notifications", page, pageSize],
     queryFn: async () => {
-      const { data } = await getMyNotifications();
+      const { data } = await getMyNotifications(page,pageSize);
       return data.data;
     },
   });
