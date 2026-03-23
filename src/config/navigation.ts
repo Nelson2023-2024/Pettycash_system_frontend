@@ -18,6 +18,7 @@ export interface NavItem {
   icon: LucideIcon;
   href: string;
   permission: string; // ← matches exactly what backend sends
+  showBadge?: boolean; // ← flag to indicate this item needs a badge
 }
 
 export interface NavGroup {
@@ -121,6 +122,7 @@ export const allNavItems: NavGroup[] = [
         icon: Bell,
         href: "/notifications",
         permission: "can_view_notifications",
+        showBadge: true,
       },
     ],
   },
