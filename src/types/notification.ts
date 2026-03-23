@@ -16,5 +16,13 @@ export interface Notification {
 
 export interface NotificationsResponse {
   unread_count: number;
-  notifications: Notification[];
+  count: number;
+  total_pages: number;
+  current_page: number;
+  page_size: number;
+  has_next: boolean;
+  has_previous: boolean;
+  next_page: number | null;
+  previous_page: number | null;
+  results: Notification[];
 }
