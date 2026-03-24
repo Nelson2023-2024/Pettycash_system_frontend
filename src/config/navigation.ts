@@ -1,6 +1,5 @@
 import {
   LayoutDashboard,
-  FilePlus,
   ClipboardList,
   Receipt,
   Wallet,
