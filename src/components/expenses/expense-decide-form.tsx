@@ -78,7 +78,7 @@ export function ExpenseDecideForm({
               <CardDescription className="capitalize flex flex-col gap-3">
                 {expense.expense_type} · M-Pesa: {expense.mpesa_phone}
                 <p className="text-xs">
-                  Submitted by: <span className="font-bold">{expense.employee_email}</span>
+                  Submitted by: <span className="font-bold">{expense.employee.email}</span>
                 </p>
               </CardDescription>
             </CardHeader>
