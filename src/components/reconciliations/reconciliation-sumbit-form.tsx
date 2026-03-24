@@ -19,6 +19,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useSubmitReconciliation } from "@/hooks/useReconciliation";
 import { Spinner } from "../ui/spinner";
 import { Reconciliation } from "@/types/reconciliation";
+import { FileUpload } from "../ui/file-upload";
 
 interface ReconciliationSubmitFormProps {
   reconciliation: Reconciliation;
@@ -130,12 +131,11 @@ const ReconciliationSubmitForm = ({
             <Controller
               name="receipt"
               control={control}
-              render={({ field: { onChange } }) => (
-                <Input
-                  type="file"
-                  accept="image/*,.pdf"
-                  disabled={!isEditable}
-                  onChange={(e) => onChange(e.target.files?.[0])}
+              render={({ field: { onChange, value } }) => (
+                <FileUpload
+                  onChange={onChange}
+                  value={value as File | undefined}
+                  label="Click to upload receipt"
                 />
               )}
             />
