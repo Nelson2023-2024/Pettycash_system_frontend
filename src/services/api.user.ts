@@ -25,3 +25,7 @@ export const updateProfile = (payload: UpdateProfilePayload) =>
   axiosInstance.post<ApiResponse<User>>("/users/profile/update/", payload, {
     headers: { "Content-Type": "multipart/form-data" },
   });
+
+
+export const searchUsers = (query: string) =>
+  axiosInstance.get<ApiResponse<User[]>>(`/users/search/?search=${query}`);

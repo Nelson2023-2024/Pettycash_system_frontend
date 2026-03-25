@@ -4,6 +4,7 @@ import {
   createUser,
   updateUser,
   updateProfile,
+  searchUsers,
 } from "@/services/api.user";
 import { CreateUserPayload, UpdateUserPayload, UpdateProfilePayload } from "@/types/user";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -102,5 +103,17 @@ export function useUpdateProfile() {
     onError: (error: Error) => {
       toast.error(error.message);
     },
+  });
+}
+
+
+export function useSearchUsers(query: string) {
+  return useQuery({
+    queryKey: ["users", "search", query],
+    queryFn: async () => {
+      const { data } = await searchUsers(query);
+      return data.data;
+    },
+    enabled: query.length >= 2, // only search after 2 chars
   });
 }
