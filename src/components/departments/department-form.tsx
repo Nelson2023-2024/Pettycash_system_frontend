@@ -1,7 +1,7 @@
 "use client";
 import * as React from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -10,7 +10,12 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
+import {
+  Field,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+} from "@/components/ui/field";
 import { cn } from "@/lib/utils";
 import FormInput from "../ui/FormInput";
 import { Textarea } from "../ui/textarea";
@@ -20,33 +25,48 @@ import {
   UpdateDepartmentInput,
   updateDepartmentSchema,
 } from "@/lib/schemas/department";
-import { useCreateDepartment, useUpdateDepartment } from "@/hooks/useDepartment";
+import {
+  useCreateDepartment,
+  useUpdateDepartment,
+} from "@/hooks/useDepartment";
 import { Spinner } from "../ui/spinner";
 import { Department } from "@/types/department";
+import { UserSearchCombobox } from "../ui/UserSearchCombobox";
 
 interface DepartmentFormProps extends React.ComponentProps<"div"> {
   department?: Department; // if passed → update mode
   onSuccess?: () => void;
 }
 
-const DepartmentForm = ({ className, department, onSuccess, ...props }: DepartmentFormProps) => {
+const DepartmentForm = ({
+  className,
+  department,
+  onSuccess,
+  ...props
+}: DepartmentFormProps) => {
   const isEdit = !!department;
 
-  const { mutate: createDepartment, isPending: isCreating } = useCreateDepartment();
-  const { mutate: updateDepartment, isPending: isUpdating } = useUpdateDepartment();
+  const { mutate: createDepartment, isPending: isCreating } =
+    useCreateDepartment();
+  const { mutate: updateDepartment, isPending: isUpdating } =
+    useUpdateDepartment();
   const isPending = isCreating || isUpdating;
 
   const {
     register,
     handleSubmit,
+    control,
     formState: { errors },
   } = useForm<CreateDepartmentInput | UpdateDepartmentInput>({
-    resolver: zodResolver(isEdit ? updateDepartmentSchema : createDepartmentSchema),
+    resolver: zodResolver(
+      isEdit ? updateDepartmentSchema : createDepartmentSchema,
+    ),
     defaultValues: isEdit
       ? {
           name: department.name,
           code: department.code,
           description: department.description,
+          line_manager_id: department?.line_manager?.id ?? "",
         }
       : {
           name: "",
@@ -58,8 +78,11 @@ const DepartmentForm = ({ className, department, onSuccess, ...props }: Departme
   function onSubmit(data: CreateDepartmentInput | UpdateDepartmentInput) {
     if (isEdit) {
       updateDepartment(
-        { department_id: department.id, payload: data as UpdateDepartmentInput },
-        { onSuccess: () => onSuccess?.() }
+        {
+          department_id: department.id,
+          payload: data as UpdateDepartmentInput,
+        },
+        { onSuccess: () => onSuccess?.() },
       );
     } else {
       createDepartment(data as CreateDepartmentInput, {
@@ -107,12 +130,22 @@ const DepartmentForm = ({ className, department, onSuccess, ...props }: Departme
 
               {/* Line manager — update only */}
               {isEdit && (
-                <FormInput
-                  label="Line Manager ID"
-                  placeholder="UUID of line manager"
-                  {...register("line_manager_id")}
-                  error={(errors as Record<string, { message?: string }>).line_manager_id?.message}
-                />
+                <Field>
+                  <FieldLabel>Line Manager</FieldLabel>
+
+                  <Controller
+                    name="line_manager_id"
+                    control={control}
+                    render={({ field }) => (
+                      <UserSearchCombobox
+                        value={field.value}
+                        onChange={field.onChange}
+                      />
+                    )}
+                  />
+
+                  <FieldError>{errors.line_manager_id?.message}</FieldError>
+                </Field>
               )}
 
               <Field>
