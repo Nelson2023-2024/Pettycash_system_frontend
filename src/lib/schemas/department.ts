@@ -11,6 +11,7 @@ export const createDepartmentSchema = z.object({
     .min(2, "Code must be at least 2 characters")
     .max(10, "Code must be at most 10 characters")
     .toUpperCase(),
+    line_manager_id: z.string().uuid("Invalid line manager ID").optional(),
 });
 
 // ── Update ───────────────────────────────────────────────
