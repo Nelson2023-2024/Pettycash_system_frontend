@@ -92,7 +92,7 @@ export const pettyCashActivityColumns: ColumnDef<PettyCashActivity>[] = [
       return (
         <div className={cn(
           "text-right tabular-nums text-sm font-medium",
-          isDeduction ? "text-[var(--status-failed-fg)]" : "text-[var(--status-active-fg)]",
+          isDeduction ? "text-(--status-failed-fg)" : "ext-(--status-active-fg)",
         )}>
           {isDeduction ? "-" : "+"}{fmt(val)}
         </div>
