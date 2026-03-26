@@ -7,7 +7,18 @@ import {
   updateTopUp,
   deactivateTopUp,
 } from "@/services/api.topup";
-import { DecideTopUpPayload, UpdateTopUpPayload, CreateTopUpPayload } from "@/types/topup";
+import {
+  DecideTopUpPayload,
+  UpdateTopUpPayload,
+  CreateTopUpPayload,
+} from "@/types/topup";
+import {
+  invalidateAllTopUps,
+  invalidateDashboard,
+  invalidateMyTopUps,
+  invalidateNotifications,
+  invalidatePettyCash,
+} from "@/utils/invalidations";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 
@@ -55,8 +66,10 @@ export function useCreateTopUp() {
       payload: CreateTopUpPayload;
     }) => createTopUp(pettycash_account_id, payload),
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ["allTopUps"] });
-      queryClient.invalidateQueries({ queryKey: ["myTopUps"] });
+      invalidateAllTopUps(queryClient);
+      invalidateMyTopUps(queryClient);
+      invalidateDashboard(queryClient);
+      invalidateNotifications(queryClient);
       toast.success(data.data.message);
     },
     onError: (error: Error) => {
@@ -82,8 +95,11 @@ export function useUpdateTopUp() {
       payload: UpdateTopUpPayload;
     }) => updateTopUp(topup_id, payload),
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ["allTopUps"] });
-      queryClient.invalidateQueries({ queryKey: ["myTopUps"] });
+      invalidateAllTopUps(queryClient);
+      invalidateMyTopUps(queryClient);
+      invalidateDashboard(queryClient);
+      invalidateNotifications(queryClient);
+
       toast.success(data.data.message);
     },
     onError: (error: Error) => {
@@ -110,7 +126,9 @@ export function useDecideTopUp() {
       payload: DecideTopUpPayload;
     }) => decideTopUp(topup_id, payload),
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ["allTopUps"] });
+      invalidateAllTopUps(queryClient);
+      invalidateDashboard(queryClient);
+      invalidateNotifications(queryClient);
       toast.success(data.data.message);
     },
     onError: (error: Error) => {
@@ -130,8 +148,10 @@ export function useDisburseTopUp() {
   return useMutation({
     mutationFn: (topup_id: string) => disburseTopUp(topup_id),
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ["allTopUps"] });
-      queryClient.invalidateQueries({ queryKey: ["pettyCashAccounts"] });
+      invalidateAllTopUps(queryClient);
+      invalidatePettyCash(queryClient);
+      invalidateDashboard(queryClient);
+      invalidateNotifications(queryClient);
       toast.success(data.data.message);
     },
     onError: (error: Error) => {
@@ -150,8 +170,10 @@ export function useDeactivateTopUp() {
   return useMutation({
     mutationFn: (topup_id: string) => deactivateTopUp(topup_id),
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ["allTopUps"] });
-      queryClient.invalidateQueries({ queryKey: ["myTopUps"] });
+      invalidateAllTopUps(queryClient);
+      invalidateMyTopUps(queryClient);
+      invalidateDashboard(queryClient);
+      invalidateNotifications(queryClient);
       toast.success(data.data.message);
     },
     onError: (error: Error) => {

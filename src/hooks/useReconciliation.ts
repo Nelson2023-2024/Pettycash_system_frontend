@@ -9,6 +9,14 @@ import {
   ReviewReconciliationPayload,
   SubmitReconciliationPayload,
 } from "@/types/reconciliation";
+import {
+  invalidateAllExpenses,
+  invalidateAllReconciliations,
+  invalidateAuthUserExpenses,
+  invalidateDashboard,
+  invalidateMyReconciliations,
+  invalidateNotifications,
+} from "@/utils/invalidations";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 
@@ -74,8 +82,10 @@ export function useSubmitReconciliation() {
       payload: SubmitReconciliationPayload;
     }) => submitReconciliation(reconciliation_id, payload),
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ["myReconciliations"] });
-      queryClient.invalidateQueries({ queryKey: ["allReconciliations"] });
+      invalidateMyReconciliations(queryClient);
+      invalidateAllReconciliations(queryClient);
+      invalidateDashboard(queryClient);
+      invalidateNotifications(queryClient);
       toast.success(data.data.message);
     },
     onError: (error: Error) => {
@@ -104,11 +114,12 @@ export function useReviewReconciliation() {
       payload: ReviewReconciliationPayload;
     }) => reviewReconciliation(reconciliation_id, payload),
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ["allReconciliations"] });
-      queryClient.invalidateQueries({ queryKey: ["myReconciliations"] });
-      // completing a reconciliation also closes the parent expense request
-      queryClient.invalidateQueries({ queryKey: ["allExpenses"] });
-      queryClient.invalidateQueries({ queryKey: ["authUserExpenses"] });
+      invalidateAllReconciliations(queryClient);
+      invalidateMyReconciliations(queryClient);
+      invalidateAllExpenses(queryClient); // parent expense closes on completion
+      invalidateAuthUserExpenses(queryClient); // employee sees their expense close too
+      invalidateDashboard(queryClient);
+      invalidateNotifications(queryClient);
       toast.success(data.data.message);
     },
     onError: (error: Error) => {

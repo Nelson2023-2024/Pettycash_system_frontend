@@ -5,6 +5,7 @@ import {
   updatePettyCash,
   deactivatePettyCash,
   getPettyCashActivity,
+  exportPettyCashActivity,
 } from "@/services/api.pettycash";
 import { UpdatePettyCashPayload } from "@/types/pettycash";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -40,6 +41,7 @@ export function useCreatePettyCash() {
     mutationFn: createPettyCash,
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["pettyCashAccounts"] });
+      queryClient.invalidateQueries({ queryKey: ["notifications"] });
       toast.success(data.data.message);
     },
     onError: (error: Error) => {
@@ -62,6 +64,7 @@ export function useUpdatePettyCash() {
     }) => updatePettyCash(id, payload),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["pettyCashAccounts"] });
+      queryClient.invalidateQueries({ queryKey: ["notifications"] });
       toast.success(data.data.message);
     },
     onError: (error: Error) => {
@@ -78,6 +81,7 @@ export function useDeactivatePettyCash() {
     mutationFn: deactivatePettyCash,
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["pettyCashAccounts"] });
+      queryClient.invalidateQueries({ queryKey: ["notifications"] });
       toast.success(data.data.message);
     },
     onError: (error: Error) => {
@@ -92,6 +96,25 @@ export function useGetPettyCashActivity() {
     queryFn: async () => {
       const { data } = await getPettyCashActivity();
       return data.data;
+    }
+  });
+}
+
+export function useExportPettyCashActivity() {
+  return useMutation({
+    mutationFn: (period: "weekly" | "monthly") =>
+      exportPettyCashActivity(period),
+    onSuccess: (response, period) => {
+      const url = URL.createObjectURL(response.data);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `petty_cash_${period}.xlsx`;
+      a.click();
+      URL.revokeObjectURL(url);
+      toast.success("Export downloaded successfully");
+    },
+    onError: (error: Error) => {
+      toast.error(error.message);
     },
   });
 }

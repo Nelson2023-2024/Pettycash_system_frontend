@@ -9,6 +9,7 @@ import {
   CreateDepartmentPayload,
   UpdateDepartmentPayload,
 } from "@/types/department";
+import { invalidateNotifications } from "@/utils/invalidations";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 
@@ -53,6 +54,7 @@ export function useCreateDepartment() {
     mutationFn: (payload: CreateDepartmentPayload) => createDepartment(payload),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["departments"] });
+      invalidateNotifications(queryClient); // notify_many → admins get notified
       toast.success(data.data.message);
     },
     onError: (error: Error) => {
@@ -79,6 +81,7 @@ export function useUpdateDepartment() {
     }) => updateDepartment(department_id, payload),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["departments"] });
+      invalidateNotifications(queryClient); // notify actor only
       toast.success(data.data.message);
     },
     onError: (error: Error) => {
@@ -99,6 +102,7 @@ export function useDeactivateDepartment() {
     mutationFn: (department_id: string) => deactivateDepartment(department_id),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["departments"] });
+      invalidateNotifications(queryClient); // notify actor only
       toast.success(data.data.message);
     },
     onError: (error: Error) => {
