@@ -38,9 +38,9 @@ interface DataTableProps<TData, TValue> {
   isLoading?: boolean;
   onEdit?: (rows: TData[]) => void;
   onDelete?: (rows: TData[]) => void;
-  onReview?: (rows: TData[]) => void;  // ← added
+  onReview?: (rows: TData[]) => void; // ← added
   editLabel?: string;
-  reviewLabel?: string;                // ← added
+  reviewLabel?: string; // ← added
 }
 
 export function DataTable<TData, TValue>({
@@ -57,8 +57,11 @@ export function DataTable<TData, TValue>({
   "use no memo";
 
   const [sorting, setSorting] = React.useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
-  const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
+    [],
+  );
+  const [columnVisibility, setColumnVisibility] =
+    React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
 
   const table = useReactTable({
@@ -90,7 +93,9 @@ export function DataTable<TData, TValue>({
             <Input
               key={column}
               placeholder={placeholder}
-              value={(table.getColumn(column)?.getFilterValue() as string) ?? ""}
+              value={
+                (table.getColumn(column)?.getFilterValue() as string) ?? ""
+              }
               onChange={(e) =>
                 table.getColumn(column)?.setFilterValue(e.target.value)
               }
@@ -170,7 +175,10 @@ export function DataTable<TData, TValue>({
           <TableBody>
             {isLoading ? (
               <TableRow>
-                <TableCell colSpan={columns.length} className="h-24 text-center">
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-24 text-center"
+                >
                   <div className="flex justify-center items-center h-full">
                     <Spinner className="size-10" />
                   </div>
@@ -181,10 +189,20 @@ export function DataTable<TData, TValue>({
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
+                  onClick={(e) => {
+                    // Don't double-toggle if the click was directly on the checkbox
+                    const target = e.target as HTMLElement;
+                    if (target.closest('[role="checkbox"]')) return;
+                    row.toggleSelected();
+                  }}
+                  className="cursor-pointer"
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext(),
+                      )}
                     </TableCell>
                   ))}
                 </TableRow>

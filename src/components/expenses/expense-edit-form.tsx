@@ -43,7 +43,7 @@ interface ExpenseEditFormProps {
 
 export function ExpenseEditForm({ expense, onSuccess }: ExpenseEditFormProps) {
   const { mutate: updateExpense, isPending } = useUpdateExpense();
-  const isApproved = expense.status.toLowerCase() === "approved";
+  const isReadOnly = expense.status.toLowerCase() != "pending";
 
   // Pre-fill form with existing expense data
   const [formData, setFormData] = useState({
@@ -258,7 +258,7 @@ export function ExpenseEditForm({ expense, onSuccess }: ExpenseEditFormProps) {
         </div>
       )}
 
-      <Button type="submit" className="w-full" disabled={isPending || isApproved}>
+      <Button type="submit" className="w-full" disabled={isPending || isReadOnly}>
         {isPending ? (
           <>
             <Spinner /> Saving changes...
