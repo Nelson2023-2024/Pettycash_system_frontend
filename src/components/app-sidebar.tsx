@@ -23,11 +23,6 @@ import { allNavItems } from "@/config/navigation";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Spinner } from "./ui/spinner";
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from "@/components/ui/avatar";
 import { useGetMyNotifications } from "@/hooks/useNotifications";
 import { Badge } from "./ui/badge";
 
@@ -35,13 +30,7 @@ export function AppSidebar() {
   const { data: user, isLoading } = useAuthMe();
   const pathname = usePathname();
   console.log(user);
-  const initials = user?.fullname
-    ? user.fullname
-        .split(" ")
-        .map((name) => name[0])
-        .join("")
-        .toUpperCase()
-    : "??";
+
 
   const permissions = new Set(user?.permissions ?? []);
 
@@ -66,7 +55,8 @@ export function AppSidebar() {
           <SidebarMenuItem>
             <SidebarMenuButton className="font-semibold">
               <BadgeDollarSign className="text-primary" />
-              <span>PettyCash</span>
+              <Link href={'/dashboard'}>PettyCash</Link>
+              
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
@@ -126,7 +116,7 @@ export function AppSidebar() {
       </SidebarContent>
 
       {/* FOOTER */}
-      <SidebarFooter>
+      {/* <SidebarFooter>
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton asChild tooltip={user?.fullname ?? "User"}>
@@ -145,7 +135,7 @@ export function AppSidebar() {
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
-      </SidebarFooter>
+      </SidebarFooter> */}
     </Sidebar>
   );
 }

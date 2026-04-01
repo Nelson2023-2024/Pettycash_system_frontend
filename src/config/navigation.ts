@@ -113,16 +113,5 @@ export const allNavItems: NavGroup[] = [
       },
     ],
   },
-  {
-    label: "Notifications",
-    items: [
-      {
-        title: "Notifications",
-        icon: Bell,
-        href: "/notifications",
-        permission: "can_view_notifications",
-        showBadge: true,
-      },
-    ],
-  },
+ 
 ];

@@ -9,7 +9,7 @@ const DashboardLayout = ({ children }: ChildrenProps) => {
       <SidebarProvider>
         <AppSidebar />
         <main className="flex flex-col w-full">
-          <header className="border-b h-12 flex justify-between items-center pr-8 sticky top-0 bg-background">
+          <header className="border-b h-12 flex justify-between items-center pr-8 sticky top-0 bg-muted z-10">
             <SidebarTrigger />
             <RightContent/>
           </header>
