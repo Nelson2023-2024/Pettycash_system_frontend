@@ -19,6 +19,7 @@ import { Expense } from "@/types/expense";
 import { decideExpenseSchema } from "@/lib/schemas/expense";
 import z from "zod";
 import Link from "next/link";
+import { usePermissions } from "@/hooks/usePermissions";
 
 interface ExpenseDecideFormProps {
   expense: Expense;
@@ -30,6 +31,7 @@ export function ExpenseDecideForm({
   onSuccess,
 }: ExpenseDecideFormProps) {
   const { mutate: decideExpense, isPending } = useDecideExpense();
+  const { can } = usePermissions();
 
   const [decision, setDecision] = useState("approved");
   const [reason, setReason] = useState("");
@@ -57,6 +59,8 @@ export function ExpenseDecideForm({
     );
   }
 
+  const canDecide = can("can_decide_expense");
+
   return (
     <Card>
       <form onSubmit={handleSubmit}>
@@ -78,7 +82,8 @@ export function ExpenseDecideForm({
               <CardDescription className="capitalize flex flex-col gap-3">
                 {expense.expense_type} · M-Pesa: {expense.mpesa_phone}
                 <p className="text-xs">
-                  Submitted by: <span className="font-bold">{expense.employee.email}</span>
+                  Submitted by:{" "}
+                  <span className="font-bold">{expense.employee.email}</span>
                 </p>
               </CardDescription>
             </CardHeader>
@@ -182,14 +187,15 @@ export function ExpenseDecideForm({
           <Button
             type="submit"
             variant={isRejecting ? "destructive" : "default"}
-            className="w-full"
-            disabled={isPending}
+            disabled={isPending || !canDecide}
           >
             {isPending ? (
               <>
                 <Spinner />
                 {isRejecting ? "Rejecting..." : "Approving..."}
               </>
+            ) : !canDecide ? (
+              "You don't have permission to decide"
             ) : isRejecting ? (
               "Reject Expense"
             ) : (
