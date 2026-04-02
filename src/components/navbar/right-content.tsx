@@ -33,7 +33,7 @@ const RightContent = () => {
             {/* ── Avatar with Popover ── */}
             <Popover>
                 <PopoverTrigger asChild>
-                    <Avatar className="cursor-pointer">
+                    <Avatar className="cursor-pointer border">
                         <AvatarImage src={user?.avatar_url ?? "/placeholder-avatar.png"} />
                         <AvatarFallback>{initials}</AvatarFallback>
                     </Avatar>
@@ -73,7 +73,7 @@ const RightContent = () => {
             {/* ── Bell stays separate ── */}
             <Link href="/notifications" className="relative">
                 {unreadCount > 0 && (
-                    <Badge variant="destructive" className="size-4 absolute top-[-4] right-[-3]">
+                    <Badge variant="destructive" className="size-6 text-center absolute top-[-11] right-[-9]">
                         {unreadCount > 99 ? "99+" : unreadCount}
                     </Badge>
                 )}
