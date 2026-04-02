@@ -60,6 +60,9 @@ export function ExpenseDecideForm({
   }
 
   const canDecide = can("can_decide_expense");
+  const isPendingStatus = expense.status === "Pending";
+
+  console.log(expense.status)
 
   return (
     <Card>
@@ -187,7 +190,7 @@ export function ExpenseDecideForm({
           <Button
             type="submit"
             variant={isRejecting ? "destructive" : "default"}
-            disabled={isPending || !canDecide}
+            disabled={isPending || !canDecide || !isPendingStatus}
           >
             {isPending ? (
               <>
@@ -196,6 +199,8 @@ export function ExpenseDecideForm({
               </>
             ) : !canDecide ? (
               "You don't have permission to decide"
+            ) : !isPendingStatus ? (
+              "Expense already decided"
             ) : isRejecting ? (
               "Reject Expense"
             ) : (
