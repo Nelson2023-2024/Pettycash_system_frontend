@@ -9,7 +9,9 @@ import {
   ScrollText,
   BadgeDollarSign,
   LucideIcon,
-  Bell,
+  HandCoins,
+  Landmark,
+  CheckCircle,
 } from "lucide-react";
 
 export interface NavItem {
@@ -113,5 +115,23 @@ export const allNavItems: NavGroup[] = [
       },
     ],
   },
- 
+
+  // ── LOANS ──────────────────────────────────────────────
+  {
+    label: "Loans",
+    items: [
+      {
+        title: "My Loans",
+        icon: HandCoins,
+        href: "/loans",
+        permission: "can_view_own_loans",
+      },
+      {
+        title: "All Loans",
+        icon: ScrollText,
+        href: "/loans/all",
+        permission: "can_view_all_loans",
+      },
+    ],
+  },
 ];
