@@ -6,8 +6,14 @@ import {
   decideLoan,
   disburseLoan,
   markLoanRepaid,
+  deactivateLoan,
+  updateLoan,
 } from "@/services/api.loan";
-import { CreateLoanPayload, DecideLoanPayload } from "@/types/loan";
+import {
+  CreateLoanPayload,
+  DecideLoanPayload,
+  UpdateLoanPayload,
+} from "@/types/loan";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 
@@ -130,6 +136,53 @@ export function useMarkLoanRepaid() {
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["allLoans"] });
       queryClient.invalidateQueries({ queryKey: ["pettyCashAccounts"] });
+      toast.success(data.data.message);
+    },
+    onError: (error: Error) => {
+      toast.error(error.message);
+    },
+  });
+}
+
+/**
+ * Employee cancels (deactivates) their loan request.
+ * Invalidates myLoans on success.
+ */
+export function useDeactivateLoan() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (loan_id: string) => deactivateLoan(loan_id),
+
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["myLoans"] });
+      toast.success(data?.data?.message ?? "Loan cancelled successfully");
+    },
+
+    onError: (error: Error) => {
+      toast.error(error.message);
+    },
+  });
+}
+
+/**
+ * Employee updates a pending loan request.
+ * Only pending loans can be updated — enforced on backend.
+ * Invalidates both myLoans and allLoans on success.
+ */
+export function useUpdateLoan() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({
+      loan_id,
+      payload,
+    }: {
+      loan_id: string;
+      payload: UpdateLoanPayload;
+    }) => updateLoan(loan_id, payload),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["myLoans"] });
+      queryClient.invalidateQueries({ queryKey: ["allLoans"] });
       toast.success(data.data.message);
     },
     onError: (error: Error) => {
