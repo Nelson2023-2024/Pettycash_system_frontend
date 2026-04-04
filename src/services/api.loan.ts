@@ -1,6 +1,11 @@
 import { axiosInstance } from "@/lib/axios";
 import { ApiResponse } from "@/types/common";
-import { Loan, CreateLoanPayload, DecideLoanPayload } from "@/types/loan";
+import {
+  Loan,
+  CreateLoanPayload,
+  DecideLoanPayload,
+  UpdateLoanPayload,
+} from "@/types/loan";
 
 // EMPLOYEE
 export const createLoan = (payload: CreateLoanPayload) =>
@@ -29,3 +34,15 @@ export const disburseLoan = (loan_id: string) =>
 
 export const markLoanRepaid = (loan_id: string) =>
   axiosInstance.post<ApiResponse<Loan>>(`/finance/loan/${loan_id}/repaid/`);
+
+// Deactivate (cancel) loan
+export const deactivateLoan = (loan_id: string) =>
+  axiosInstance.delete<ApiResponse<null>>(
+    `/finance/loan/${loan_id}/deactivate/`,
+  );
+
+export const updateLoan = (loan_id: string, payload: UpdateLoanPayload) =>
+  axiosInstance.patch<ApiResponse<Loan>>(
+    `/finance/loan/${loan_id}/update/`,
+    payload,
+  );
