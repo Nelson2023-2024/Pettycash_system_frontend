@@ -4,7 +4,6 @@ import { Controller, Resolver, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import {
   Field,
   FieldContent,
@@ -19,7 +18,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { useCreateExpense } from "@/hooks/useExpense";
 import { CreateExpenseInput, createExpenseSchema } from "@/lib/schemas/expense";
 import { Spinner } from "../ui/spinner";
-import { useState, useRef } from "react";
 import { FileUpload } from "../ui/file-upload";
 import FormInput from "../ui/FormInput";
 
