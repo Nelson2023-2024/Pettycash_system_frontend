@@ -3,6 +3,7 @@ export interface Loan {
   amount: string;
   reason: string;
   due_date: string | null;
+  phone_number: string | null;
   repaid_at: string | null;
   decision_reason: string | null;
   is_active: boolean;
@@ -27,9 +28,16 @@ export interface Loan {
   disbursed_at: string | null;
 }
 
+export interface UpdateLoanPayload {
+  amount?: number;
+  reason?: string;
+  phone_number: string | null;
+}
+
 export interface CreateLoanPayload {
   amount: number;
   reason: string;
+  phone_number: string | null;
 }
 
 export interface DecideLoanPayload {
