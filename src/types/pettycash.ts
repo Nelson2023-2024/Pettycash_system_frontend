@@ -12,24 +12,20 @@ export interface PettyCash {
 }
 
 export interface PettyCashActivity {
-  id: string;
-  event_code: string;
-  event_name: string;
-  message: string;
+  date: string;
+  item: string;
   triggered_by: {
     id: string;
     name: string;
     email: string;
   } | null;
-  created_at: string;
   amount: string | null;
-  expense_amount: string | null;
   transaction_cost: string | null;
-  previous_balance: string | null;
-  new_balance: string | null;
-  amount_deducted: string | null;
+  total_spent: string | null;
+  balance: string | null;
+  event_code: string | null;
+  event_name: string | null;
 }
-
 export interface PettyCashAccountActivity {
   account: PettyCash;
   activity: PettyCashActivity[];

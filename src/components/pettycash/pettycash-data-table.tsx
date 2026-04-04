@@ -5,6 +5,7 @@ import { pettyCashActivityColumns } from "./pettycash-columns";
 import { useGetPettyCashActivity } from "@/hooks/usePettyCash";
 import { Spinner } from "../ui/spinner";
 import { cn } from "@/lib/utils";
+import PettyCashExportButton from "./pettycash-export-button";
 
 const fmt = (val: string) =>
   new Intl.NumberFormat("en-KE", {
@@ -43,23 +44,27 @@ const PettyCashDataTable = () => {
                 {account.description}
               </p>
             </div>
-            <div className="text-right">
-              <p className="text-xs text-muted-foreground uppercase tracking-wide">
-                Current Balance
-              </p>
-              <p
-                className={cn(
-                  "text-2xl font-bold tabular-nums",
-                  isLow
-                    ? "text-(--status-failed-fg)"
-                    : "text-(--status-active-fg)",
-                )}
-              >
-                {fmt(account.current_balance)}
-              </p>
-              <p className="text-xs text-muted-foreground">
-                Min. threshold: {fmt(account.minimum_threshold)}
-              </p>
+            <div className="flex items-center gap-4">
+              {/* ── Export button ── */}
+              <PettyCashExportButton />
+              <div className="text-right">
+                <p className="text-xs text-muted-foreground uppercase tracking-wide">
+                  Current Balance
+                </p>
+                <p
+                  className={cn(
+                    "text-2xl font-bold tabular-nums",
+                    isLow
+                      ? "text-(--status-failed-fg)"
+                      : "text-(--status-active-fg)",
+                  )}
+                >
+                  {fmt(account.current_balance)}
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  Min. threshold: {fmt(account.minimum_threshold)}
+                </p>
+              </div>
             </div>
           </div>
         </div>

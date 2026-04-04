@@ -38,6 +38,7 @@ export function ExpenseDisburseForm({
           Confirm you want to disburse this approved expense
         </CardDescription>
       </CardHeader>
+    
 
       <CardContent className="flex flex-col gap-6">
         {/* ── Expense summary ── */}
@@ -51,7 +52,7 @@ export function ExpenseDisburseForm({
               {expense.expense_type} · M-Pesa: {expense.mpesa_phone}
               <p className="text-xs">
                 Submitted by:{" "}
-                <span className="font-bold">{expense.employee_email}</span>
+                <span className="font-bold">{expense.employee.email}</span>
               </p>
             </CardDescription>
           </CardHeader>

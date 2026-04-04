@@ -62,6 +62,9 @@ export function ReconciliationReviewForm({
       minimumFractionDigits: 0,
     }).format(Number(val));
 
+  const isCompleted = reconciliation.status == "Complete";
+  console.log(reconciliation.status);
+
   return (
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -149,11 +152,17 @@ export function ReconciliationReviewForm({
             <FieldError>{errors.comments?.message}</FieldError>
           </Field>
 
-          <Button type="submit" className="w-full" disabled={isPending}>
+          <Button
+            type="submit"
+            className="w-full"
+            disabled={isPending || isCompleted}
+          >
             {isPending ? (
               <>
                 <Spinner /> Submitting...
               </>
+            ) : isCompleted ? (
+              "Already completed"
             ) : decision === "completed" ? (
               "Approve Reconciliation"
             ) : (

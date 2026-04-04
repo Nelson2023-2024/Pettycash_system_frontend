@@ -17,27 +17,26 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "./ui/collapsible";
-import { ChevronDown, User2, BadgeDollarSign } from "lucide-react";
+import { ChevronDown, BadgeDollarSign } from "lucide-react";
 import { useAuthMe } from "@/hooks/useAuth";
 import { allNavItems } from "@/config/navigation";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Spinner } from "./ui/spinner";
-import { Avatar, AvatarBadge, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useGetMyNotifications } from "@/hooks/useNotifications";
+import { Badge } from "./ui/badge";
 
 export function AppSidebar() {
   const { data: user, isLoading } = useAuthMe();
   const pathname = usePathname();
   console.log(user);
-  const initials = user?.fullname
-    ? user.fullname
-        .split(" ")
-        .map((name) => name[0])
-        .join("")
-        .toUpperCase()
-    : "??";
+
 
   const permissions = new Set(user?.permissions ?? []);
+
+  // ── fetch unread count for notification badge ─────────
+  const { data: notificationData } = useGetMyNotifications(1, 1);
+  const unreadCount = notificationData?.unread_count ?? 0;
 
   // Filter each group's items to only what the user has permission for
   // Then drop empty groups entirely
@@ -56,7 +55,8 @@ export function AppSidebar() {
           <SidebarMenuItem>
             <SidebarMenuButton className="font-semibold">
               <BadgeDollarSign className="text-primary" />
-              <span>PettyCash</span>
+              <Link href={'/dashboard'}>PettyCash</Link>
+              
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
@@ -95,6 +95,13 @@ export function AppSidebar() {
                             <Link href={item.href}>
                               <item.icon />
                               <span>{item.title}</span>
+                              {/* Badge for notifications */}
+                              {item.showBadge && unreadCount > 0 && (
+                                <Badge variant={"destructive"}>
+                                  {" "}
+                                  {unreadCount > 99 ? "99+" : unreadCount}
+                                </Badge>
+                              )}
                             </Link>
                           </SidebarMenuButton>
                         </SidebarMenuItem>
@@ -109,7 +116,7 @@ export function AppSidebar() {
       </SidebarContent>
 
       {/* FOOTER */}
-      <SidebarFooter>
+      {/* <SidebarFooter>
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton asChild tooltip={user?.fullname ?? "User"}>
@@ -128,7 +135,7 @@ export function AppSidebar() {
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
-      </SidebarFooter>
+      </SidebarFooter> */}
     </Sidebar>
   );
 }

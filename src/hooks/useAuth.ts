@@ -36,7 +36,7 @@ export function useLogin() {
       document.cookie = `permissions=${JSON.stringify(data.data.permissions)}; path=/`;
       queryClient.invalidateQueries({ queryKey: ["authUser"] });
       toast.success(data.message);
-      router.replace("/");
+      router.replace("/dashboard");
     },
     onError: (error: Error) => {
       toast.error(error.message);
@@ -58,7 +58,6 @@ export function useLogout() {
 
     onSuccess: (data) => {
       sessionStorage.removeItem("access_token");
-      document.cookie = "permissions=; path=/; max-age=0";
       queryClient.invalidateQueries({ queryKey: ["authUser"] });
       toast.success(data.message);
     },

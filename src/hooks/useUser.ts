@@ -4,8 +4,10 @@ import {
   createUser,
   updateUser,
   updateProfile,
+  searchUsers,
 } from "@/services/api.user";
 import { CreateUserPayload, UpdateUserPayload, UpdateProfilePayload } from "@/types/user";
+import { invalidateNotifications } from "@/utils/invalidations";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 
@@ -51,6 +53,7 @@ export function useCreateUser() {
     mutationFn: (payload: CreateUserPayload) => createUser(payload),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["users"] });
+      invalidateNotifications(queryClient);
       toast.success(data.data.message);
     },
     onError: (error: Error) => {
@@ -77,6 +80,7 @@ export function useUpdateUser() {
     onSuccess: (data, variables) => {
       queryClient.invalidateQueries({ queryKey: ["users"] });
       queryClient.invalidateQueries({ queryKey: ["user", variables.user_id] });
+      invalidateNotifications(queryClient); 
       toast.success(data.data.message);
     },
     onError: (error: Error) => {
@@ -97,10 +101,23 @@ export function useUpdateProfile() {
     mutationFn: (payload: UpdateProfilePayload) => updateProfile(payload),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["authUser"] });
+      invalidateNotifications(queryClient);
       toast.success(data.data.message);
     },
     onError: (error: Error) => {
       toast.error(error.message);
     },
+  });
+}
+
+
+export function useSearchUsers(query: string) {
+  return useQuery({
+    queryKey: ["users", "search", query],
+    queryFn: async () => {
+      const { data } = await searchUsers(query);
+      return data.data;
+    },
+    enabled: query.length >= 2, // only search after 2 chars
   });
 }

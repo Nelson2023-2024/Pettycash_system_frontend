@@ -13,6 +13,13 @@ import {
   DecideExpensePayload,
   UpdateExpensePayload,
 } from "@/types/expense";
+import {
+  invalidateAllExpenses,
+  invalidateAuthUserExpenses,
+  invalidateDashboard,
+  invalidateNotifications,
+  invalidatePettyCash,
+} from "@/utils/invalidations";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 
@@ -55,7 +62,9 @@ export function useCreateExpense() {
   return useMutation({
     mutationFn: (payload: CreateExpensePayload) => createExpense(payload),
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ["authUserExpenses"] });
+      invalidateAuthUserExpenses(queryClient);
+      invalidateDashboard(queryClient);
+      invalidateNotifications(queryClient);
 
       toast.success(data.data.message);
     },
@@ -77,7 +86,10 @@ export function useUpdateExpense() {
       payload: UpdateExpensePayload;
     }) => updateExpense(id, payload),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["authUserExpenses"] });
+      invalidateAuthUserExpenses(queryClient);
+      invalidateDashboard(queryClient);
+      invalidateNotifications(queryClient);
+
       toast.success("Expense updated successfully");
     },
     onError: (error: Error) => {
@@ -92,7 +104,10 @@ export function useDeactivateExpense() {
   return useMutation({
     mutationFn: (id: string) => deactivateExpense(id),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["authUserExpenses"] });
+      invalidateAuthUserExpenses(queryClient);
+      invalidateDashboard(queryClient);
+      invalidateNotifications(queryClient);
+
       toast.success("Expense cancelled");
     },
     onError: (error: Error) => {
@@ -114,7 +129,9 @@ export function useDecideExpense() {
       payload: DecideExpensePayload;
     }) => decideExpense(id, payload),
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ["allExpenses"] });
+      invalidateAllExpenses(queryClient);
+      invalidateDashboard(queryClient);
+      invalidateNotifications(queryClient);
       toast.success(data.data.message);
     },
     onError: (error: Error) => {
@@ -129,7 +146,10 @@ export function useDisburseExpense() {
   return useMutation({
     mutationFn: (id: string) => disburseExpense(id),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["allExpenses"] });
+      invalidateAllExpenses(queryClient);
+      invalidatePettyCash(queryClient);
+      invalidateDashboard(queryClient);
+      invalidateNotifications(queryClient);
       toast.success("Expense disbursed successfully");
     },
     onError: (error: Error) => {

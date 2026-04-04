@@ -1,6 +1,5 @@
 import {
   LayoutDashboard,
-  FilePlus,
   ClipboardList,
   Receipt,
   Wallet,
@@ -10,7 +9,9 @@ import {
   ScrollText,
   BadgeDollarSign,
   LucideIcon,
-  Bell,
+  HandCoins,
+  Landmark,
+  CheckCircle,
 } from "lucide-react";
 
 export interface NavItem {
@@ -18,6 +19,7 @@ export interface NavItem {
   icon: LucideIcon;
   href: string;
   permission: string; // ← matches exactly what backend sends
+  showBadge?: boolean; // ← flag to indicate this item needs a badge
 }
 
 export interface NavGroup {
@@ -113,14 +115,22 @@ export const allNavItems: NavGroup[] = [
       },
     ],
   },
+
+  // ── LOANS ──────────────────────────────────────────────
   {
-    label: "Notifications",
+    label: "Loans",
     items: [
       {
-        title: "Notifications",
-        icon: Bell,
-        href: "/notifications",
-        permission: "can_view_notifications",
+        title: "My Loans",
+        icon: HandCoins,
+        href: "/loans",
+        permission: "can_view_own_loans",
+      },
+      {
+        title: "All Loans",
+        icon: ScrollText,
+        href: "/loans/all",
+        permission: "can_view_all_loans",
       },
     ],
   },
