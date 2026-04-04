@@ -1,4 +1,4 @@
-import { useFormContext } from "react-hook-form";
+import { FieldValues, Path, PathValue, useFormContext } from "react-hook-form";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import {
   Field,
@@ -9,7 +9,6 @@ import {
   FieldTitle,
 } from "@/components/ui/field";
 import { Controller } from "react-hook-form";
-import { DecideTopUpInput } from "@/lib/schemas/topup";
 
 const DECISION_TYPES = [
   {
@@ -24,20 +23,21 @@ const DECISION_TYPES = [
   },
 ];
 
-export function DecisionRadio() {
+export function DecisionRadio<T extends FieldValues>() {
   // useFormContext reads the form state from the nearest FormProvider
   // no need to pass control or errors as props
   const {
     control,
     formState: { errors },
-  } = useFormContext<DecideTopUpInput>();
+  } = useFormContext<T>();
 
   return (
     <Field>
       <FieldLabel>Decision</FieldLabel>
       <Controller
-        name="decision"
+        name={"decision" as Path<T>}
         control={control}
+         defaultValue={"approved" as PathValue<T, Path<T>>}
         render={({ field }) => (
           <RadioGroup
             value={field.value}
@@ -61,7 +61,7 @@ export function DecisionRadio() {
       {errors.decision && (
         // errors.decision.message could be string or undefined
         // casting to any to avoid TypeScript complaint since form schema varies
-        <FieldError>{errors.decision?.message}</FieldError>
+        <FieldError>{errors.decision?.message as string}</FieldError>
       )}
     </Field>
   );

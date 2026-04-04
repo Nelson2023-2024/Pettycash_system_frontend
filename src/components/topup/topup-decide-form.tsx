@@ -9,9 +9,7 @@ import { useDecideTopUp } from "@/hooks/useTopup";
 import { Button } from "../ui/button";
 import { Spinner } from "../ui/spinner";
 import { TopUp } from "@/types/topup";
-import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
 import { StatusBadge } from "../ui/status-badge";
-import { FieldContent, FieldDescription, FieldTitle } from "../ui/field";
 
 import {
   Card,
@@ -100,7 +98,7 @@ export default function TopupDecideForm({
             </CardContent>
           </Card>
           {/* ── Decision ── */}
-          <DecisionRadio />
+          <DecisionRadio<DecideTopUpInput> />
 
           {/* ── Reason ── */}
           <Field>
